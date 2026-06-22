@@ -14,15 +14,18 @@ permalink: /bookmarks/
   </section>
 </div>
 
-<script>
-{% include bookmarks_data.js %}
-</script>
+<script src="{{ '/assets/js/bookmarks_data.js' | relative_url }}"></script>
 <script>
 (function(){
   const data = BOOKMARKS_DATA;
   const treeEl = document.getElementById('bm-tree');
   const contentEl = document.getElementById('bm-content');
   const searchEl = document.getElementById('bm-search');
+  
+  if(!data || !data.children) {
+    contentEl.innerHTML = '<p class="bm-placeholder">收藏夹数据加载失败，请稍后重试。</p>';
+    return;
+  }
   
   function buildTree(node, depth) {
     const li = document.createElement('li');
@@ -60,48 +63,35 @@ permalink: /bookmarks/
       html += '<div class="bm-subfolders">';
       node.children.forEach(c => {
         let count = (c.bookmarks ? c.bookmarks.length : 0);
-        html += '<span class="bm-subfolder" onclick="document.querySelectorAll(\'.bm-folder\').forEach(function(el){if(el.textContent.includes(\'' + c.name + '\'))el.click();})">' + c.name + ' (' + count + ')</span>';
+        let escapedName = c.name.replace(/'/g, "\\'");
+        html += '<span class="bm-subfolder" onclick="var els=document.querySelectorAll(\'.bm-folder\');for(var i=0;i<els.length;i++){if(els[i].textContent.trim().indexOf(\'' + escapedName + '\')===0)els[i].click();}">' + c.name + ' (' + count + ')</span>';
       });
       html += '</div>';
     }
     contentEl.innerHTML = html;
   }
   
-  // Build tree
   data.children.forEach(c => treeEl.appendChild(buildTree(c, 0)));
   
-  // Search
   searchEl.addEventListener('input', function(){
     const q = this.value.toLowerCase();
+    if(!q) { contentEl.innerHTML = '<p class="bm-placeholder">选择一个分类查看链接</p>'; return; }
     const allFolders = treeEl.querySelectorAll('.bm-folder');
-    allFolders.forEach(f => {
-      const li = f.parentElement;
-      if(!q) { li.style.display = ''; return; }
-      const hasMatch = f.textContent.toLowerCase().includes(q) ||
-        (li.querySelector('ul') && li.querySelector('ul').textContent.toLowerCase().includes(q));
-      li.style.display = hasMatch ? '' : 'none';
-    });
-    if(q) {
-      // Show all matching bookmarks
-      let results = [];
-      function searchNode(node) {
-        if(node.bookmarks) {
-          node.bookmarks.forEach(b => {
-            if(b.title.toLowerCase().includes(q)) results.push(b);
-          });
-        }
-        if(node.children) node.children.forEach(searchNode);
-      }
-      searchNode(data);
-      let html = '<h2>搜索结果: "' + q + '" (' + results.length + ')</h2><ul class="bm-links">';
-      results.forEach(b => {
-        let title = b.title;
-        if(title.length > 100) title = title.substring(0,100) + '...';
-        html += '<li><a href="' + b.url + '" target="_blank" rel="noopener">' + title + '</a></li>';
-      });
-      html += '</ul>';
-      contentEl.innerHTML = html;
+    allFolders.forEach(f => { f.parentElement.style.display = ''; });
+    let results = [];
+    function searchNode(node) {
+      if(node.bookmarks) node.bookmarks.forEach(b => { if(b.title.toLowerCase().includes(q)) results.push(b); });
+      if(node.children) node.children.forEach(searchNode);
     }
+    searchNode(data);
+    let html = '<h2>搜索结果: "' + q + '" (' + results.length + ' 条)</h2><ul class="bm-links">';
+    results.forEach(b => {
+      let title = b.title;
+      if(title.length > 100) title = title.substring(0,100) + '...';
+      html += '<li><a href="' + b.url + '" target="_blank" rel="noopener">' + title + '</a></li>';
+    });
+    html += '</ul>';
+    contentEl.innerHTML = html;
   });
 })();
 </script>
