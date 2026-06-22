@@ -1,0 +1,21 @@
+---
+layout: default
+title: 项目
+permalink: /projects/
+---
+
+<div class="projects-list">
+  <h1>项目</h1>
+  {% if site.projects.size > 0 %}
+    <div class="project-cards">
+    {% for project in site.projects %}
+      <a href="{{ project.url | relative_url }}" class="project-card">
+        <h2>{{ project.title }}</h2>
+        <p>{{ project.excerpt | strip_html | truncate: 150 }}</p>
+      </a>
+    {% endfor %}
+    </div>
+  {% else %}
+    <p class="empty-hint">还没有项目展示，敬请期待。</p>
+  {% endif %}
+</div>

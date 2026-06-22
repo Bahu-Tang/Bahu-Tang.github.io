@@ -1,0 +1,20 @@
+---
+layout: default
+title: 博客
+permalink: /blog/
+---
+
+<div class="blog-list">
+  <h1>博客</h1>
+  {% if site.posts.size > 0 %}
+    {% for post in site.posts %}
+      <article class="blog-card">
+        <h2><a href="{{ post.url | relative_url }}">{{ post.title }}</a></h2>
+        <time>{{ post.date | date: "%Y-%m-%d" }}</time>
+        <p>{{ post.excerpt | strip_html | truncate: 200 }}</p>
+      </article>
+    {% endfor %}
+  {% else %}
+    <p class="empty-hint">还没有文章，敬请期待。</p>
+  {% endif %}
+</div>

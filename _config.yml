@@ -1,0 +1,44 @@
+# Welcome to Jekyll
+#
+# This config file is for GitHub Pages deployment.
+# https://jekyllrb.com/docs/configuration/
+
+title: 128
+email: 
+description: >- 
+  Personal blog, bookmarks, and project showcase.
+baseurl: ""
+url: "https://Bahu-Tang.github.io"
+github_username: Bahu-Tang
+
+# Build settings
+markdown: kramdown
+highlighter: rouge
+
+# Permalinks
+permalink: /blog/:year/:month/:title/
+
+# Collections
+collections:
+  projects:
+    output: true
+    permalink: /projects/:path/
+
+# Defaults
+defaults:
+  - scope:
+      path: ""
+      type: "posts"
+    values:
+      layout: "post"
+  - scope:
+      path: ""
+      type: "projects"
+    values:
+      layout: "post"
+
+# Exclude from processing
+exclude:
+  - Gemfile
+  - Gemfile.lock
+  - README.md
