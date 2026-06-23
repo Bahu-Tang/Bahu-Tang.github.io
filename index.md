@@ -27,6 +27,11 @@ title: 首页
     <h2>博客</h2>
     <p>技术笔记、学习心得、生活记录</p>
   </a>
+  <a href="{{ '/notes/' | relative_url }}" class="card">
+    <span class="card-icon">📒</span>
+    <h2>笔记</h2>
+    <p>Obsidian 知识库，嵌入式开发与项目记录</p>
+  </a>
   <a href="{{ '/projects/' | relative_url }}" class="card">
     <span class="card-icon">🔧</span>
     <h2>项目</h2>

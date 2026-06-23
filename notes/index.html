@@ -6,17 +6,18 @@ permalink: /notes/
 
 <div class="notes-page">
   <h1>笔记</h1>
+  <input type="text" id="notes-search" class="notes-search" placeholder="搜索笔记...">
 
   {% assign categories = site.notes | group_by: "category" %}
   
   {% if categories.size > 0 %}
     {% for cat in categories %}
-      <div class="notes-section">
+      <div class="notes-section" data-category="{{ cat.name }}">
         <h2 class="notes-category">{{ cat.name }}</h2>
         <div class="notes-grid">
           {% assign sorted = cat.items | sort: "title" %}
           {% for note in sorted %}
-            <a href="{{ note.url | relative_url }}" class="notes-card">
+            <a href="{{ note.url | relative_url }}" class="notes-card" data-title="{{ note.title | downcase }}" data-tags="{% for tag in note.tags %}{{ tag | downcase }} {% endfor %}">
               <h3>{{ note.title }}</h3>
               {% if note.tags %}
                 <div class="notes-tags">
@@ -34,3 +35,26 @@ permalink: /notes/
     <p class="empty-hint">还没有笔记，敬请期待。</p>
   {% endif %}
 </div>
+
+<script>
+(function(){
+  var input = document.getElementById('notes-search');
+  if (!input) return;
+  input.addEventListener('input', function(){
+    var q = this.value.toLowerCase();
+    var sections = document.querySelectorAll('.notes-section');
+    sections.forEach(function(sec){
+      var cards = sec.querySelectorAll('.notes-card');
+      var anyVisible = false;
+      cards.forEach(function(card){
+        var title = card.getAttribute('data-title') || '';
+        var tags = card.getAttribute('data-tags') || '';
+        var match = !q || title.indexOf(q) >= 0 || tags.indexOf(q) >= 0;
+        card.style.display = match ? '' : 'none';
+        if (match) anyVisible = true;
+      });
+      sec.style.display = anyVisible ? '' : 'none';
+    });
+  });
+})();
+</script>

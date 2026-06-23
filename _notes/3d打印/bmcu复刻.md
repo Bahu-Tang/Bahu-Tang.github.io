@@ -115,6 +115,7 @@ category: 3d打印
 
 |名称|规格|购买点此购买|购买数量|备注|
 |---|---|---|---|---|
+|---|---|---|---|---
 |3.3V电源模块|24V-3.3V|[点此购买](https://item.taobao.com/item.htm?id=644346322045&skuId=4634423556340)|1（推荐2）|焊接简单，成本更低|
 使用IC[​](https://bmcu.wanzii.cn/doc/prepare/list.html#%E4%BD%BF%E7%94%A8ic)
 

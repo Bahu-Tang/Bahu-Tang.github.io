@@ -340,6 +340,9 @@ a:hover { color: var(--green-dark); }
 }
 
 /* ===== Post ===== */
+.post-container { display: flex; gap: 2rem; }
+.post-container.has-toc .post-main { flex: 1; min-width: 0; }
+
 .post-header {
   margin-bottom: 2rem;
   padding-bottom: 1rem;
@@ -347,10 +350,154 @@ a:hover { color: var(--green-dark); }
 }
 .post-header h1 { font-size: 1.8rem; font-weight: 700; }
 .post-header time { color: var(--text-light); font-size: 0.9rem; display: block; margin-top: 0.25rem; }
+.post-category {
+  display: inline-block; padding: 0.2rem 0.7rem;
+  background: var(--green-pale); color: var(--green-dark);
+  border-radius: 14px; font-size: 0.8rem; font-weight: 500; margin-top: 0.35rem;
+}
+
+/* Post content */
 .post-content { line-height: 1.9; font-size: 1.02rem; }
 .post-content p { margin-bottom: 1.15rem; }
 .post-content ul, .post-content ol { margin: 0.75rem 0 0.75rem 1.5rem; }
-.post-content a { text-decoration: underline; text-underline-offset: 3px; }
+.post-content a { color: var(--green); text-decoration: underline; text-underline-offset: 3px; }
+
+/* ===== Table styles ===== */
+.post-content table {
+  width: 100%; border-collapse: separate; border-spacing: 0;
+  margin: 1.25rem 0; font-size: 0.92rem; border-radius: 8px;
+  overflow: hidden; box-shadow: 0 1px 4px rgba(0,0,0,0.04);
+}
+.post-content th {
+  background: var(--green-pale); color: var(--green-dark);
+  padding: 0.6rem 0.85rem; text-align: left; font-weight: 600;
+  border-bottom: 2px solid var(--green-light);
+}
+.post-content td {
+  padding: 0.55rem 0.85rem; border-bottom: 1px solid var(--border);
+  background: var(--card);
+}
+.post-content tr:last-child td { border-bottom: none; }
+.post-content tr:nth-child(even) td { background: #FAFBFC; }
+.post-content tr:hover td { background: var(--green-pale); }
+
+/* ===== Image styles ===== */
+.post-content img {
+  max-width: 100%; height: auto; border-radius: 8px;
+  box-shadow: 0 2px 8px rgba(0,0,0,0.06);
+  margin: 1rem 0; display: block; cursor: zoom-in;
+  transition: box-shadow var(--transition);
+}
+.post-content img:hover { box-shadow: 0 4px 16px rgba(0,0,0,0.12); }
+
+/* ===== Code blocks ===== */
+.post-content pre {
+  background: #F8FAF9; border-left: 3px solid var(--green);
+  border-radius: 8px; padding: 1rem 1.25rem; overflow-x: auto;
+  font-size: 0.88rem; font-family: "SF Mono", "Fira Code", "Cascadia Code", Consolas, monospace;
+  line-height: 1.6; margin: 1rem 0;
+}
+.post-content code {
+  background: var(--green-pale); color: var(--green-dark);
+  padding: 0.12rem 0.4rem; border-radius: 4px; font-size: 0.9em;
+}
+.post-content pre code { background: none; padding: 0; color: var(--text); }
+
+/* ===== Blockquotes ===== */
+.post-content blockquote {
+  border-left: 3px solid var(--green);
+  background: var(--green-pale);
+  padding: 0.75rem 1rem; margin: 1rem 0; border-radius: 0 8px 8px 0;
+  color: var(--text);
+}
+.post-content blockquote p { margin-bottom: 0.35rem; }
+
+/* ===== Horizontal rule ===== */
+.post-content hr {
+  border: none; height: 1px;
+  background: linear-gradient(to right, var(--green-light), var(--green), var(--green-light));
+  margin: 2rem 0;
+}
+
+/* ===== Progress bar ===== */
+.progress-bar {
+  position: fixed; top: 0; left: 0; height: 3px;
+  background: linear-gradient(to right, var(--green), #66BB6A);
+  z-index: 200; width: 0; transition: width 0.1s linear;
+}
+
+/* ===== TOC sidebar ===== */
+.post-toc {
+  width: 220px; flex-shrink: 0;
+  position: sticky; top: 80px;
+  align-self: flex-start;
+  max-height: calc(100vh - 120px);
+  overflow-y: auto;
+  font-size: 0.85rem;
+}
+.toc-title {
+  font-weight: 700; color: var(--text);
+  margin-bottom: 0.65rem; font-size: 0.95rem;
+}
+.toc-nav ul { list-style: none; padding: 0; margin: 0; }
+.toc-nav li { margin-bottom: 0.3rem; }
+.toc-nav a {
+  display: block; padding: 0.3rem 0.5rem; border-radius: 6px;
+  color: var(--text-light); text-decoration: none;
+  transition: all var(--transition);
+}
+.toc-nav a:hover, .toc-nav a.toc-active {
+  background: var(--green-pale); color: var(--green-dark);
+}
+.toc-nav a.toc-active { font-weight: 600; }
+.toc-h2 { font-weight: 500; }
+.toc-h3 { padding-left: 0.8rem; font-size: 0.82rem; }
+
+/* ===== Post navigation ===== */
+.post-nav {
+  display: flex; justify-content: space-between; align-items: flex-start;
+  margin-top: 3rem; padding-top: 1.5rem;
+  border-top: 1px solid var(--border); gap: 1rem;
+}
+.post-nav-link {
+  flex: 1; padding: 0.75rem 1rem; border-radius: 10px;
+  transition: all var(--transition); text-decoration: none;
+}
+.post-nav-link.prev { text-align: left; }
+.post-nav-link.next { text-align: right; }
+.post-nav-link:hover { background: var(--green-pale); }
+.post-nav-link.disabled { visibility: hidden; }
+.post-nav-link.back {
+  flex: 0 0 auto; text-align: center; color: var(--green);
+  font-weight: 500; white-space: nowrap;
+}
+.post-nav-label { font-size: 0.78rem; color: var(--text-light); display: block; margin-bottom: 0.15rem; }
+.post-nav-title { font-size: 0.9rem; font-weight: 600; color: var(--text); }
+
+/* ===== Back to top ===== */
+.back-to-top {
+  position: fixed; bottom: 2rem; right: 2rem;
+  width: 42px; height: 42px;
+  background: var(--green); color: #fff; border: none;
+  border-radius: 50%; font-size: 1.2rem;
+  cursor: pointer; display: none; align-items: center; justify-content: center;
+  box-shadow: 0 4px 12px rgba(76,175,80,0.3);
+  transition: all var(--transition); z-index: 50;
+}
+.back-to-top:hover { transform: translateY(-2px); box-shadow: 0 6px 16px rgba(76,175,80,0.4); }
+
+/* ===== Lightbox ===== */
+.lightbox {
+  display: none; position: fixed; top: 0; left: 0; right: 0; bottom: 0;
+  background: rgba(0,0,0,0.85); z-index: 300;
+  justify-content: center; align-items: center; cursor: zoom-out;
+}
+.lightbox.show { display: flex; }
+.lightbox img { max-width: 90vw; max-height: 90vh; object-fit: contain; border-radius: 8px; box-shadow: none; cursor: auto; }
+.lightbox-close {
+  position: absolute; top: 1.5rem; right: 2rem; color: #fff;
+  font-size: 2rem; cursor: pointer; line-height: 1;
+}
 
 /* ===== Projects ===== */
 .project-cards {
@@ -435,10 +582,19 @@ a:hover { color: var(--green-dark); }
 .notes-page h1 {
   font-size: 1.6rem;
   font-weight: 700;
-  margin-bottom: 1.5rem;
+  margin-bottom: 1rem;
   padding-bottom: 0.6rem;
   border-bottom: 2px solid var(--green-light);
 }
+
+.notes-search {
+  width: 100%; max-width: 400px;
+  padding: 0.55rem 0.85rem;
+  border: 1.5px solid var(--border);
+  border-radius: 10px; font-size: 0.9rem; margin-bottom: 1.5rem;
+  outline: none; transition: border-color var(--transition); background: var(--bg);
+}
+.notes-search:focus { border-color: var(--green); background: var(--card); }
 
 .notes-section {
   margin-bottom: 2.5rem;
