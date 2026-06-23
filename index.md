@@ -32,6 +32,11 @@ title: 首页
     <h2>项目</h2>
     <p>个人作品与开源项目展示</p>
   </a>
+  <a href="{{ '/newtab.html' | relative_url }}" class="card">
+    <span class="card-icon">🏠</span>
+    <h2>新标签页</h2>
+    <p>常用网站卡片式快速访问</p>
+  </a>
   <a href="{{ '/about/' | relative_url }}" class="card">
     <span class="card-icon">👤</span>
     <h2>关于</h2>

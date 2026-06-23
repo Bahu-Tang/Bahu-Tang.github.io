@@ -8,152 +8,406 @@
   :root {
     --green: #4CAF50;
     --green-dark: #388E3C;
-    --green-pale: #E8F5E9;
-    --green-light: #C8E6C9;
+    --green-pale: rgba(76,175,80,0.12);
+    --green-light: rgba(76,175,80,0.25);
     --text: #2C3E50;
     --text-light: #6B7280;
-    --bg: #F5F7FA;
-    --card: #FFFFFF;
+    --card: rgba(255,255,255,0.88);
+    --card-hover: rgba(255,255,255,0.97);
     --radius: 14px;
-    --shadow: 0 2px 12px rgba(0,0,0,0.05);
-    --shadow-hover: 0 8px 24px rgba(76,175,80,0.15);
-    --transition: 0.2s ease;
+    --shadow: 0 2px 12px rgba(0,0,0,0.04);
+    --shadow-hover: 0 8px 28px rgba(76,175,80,0.18);
+    --transition: 0.25s cubic-bezier(0.4, 0, 0.2, 1);
+    --blur: blur(6px);
   }
   *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
-  html { font-size: 16px; }
+
+  html { font-size: 16px; height: 100%; }
+
   body {
     font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, "Noto Sans SC", sans-serif;
-    background: var(--bg);
     color: var(--text);
     display: flex; flex-direction: column; align-items: center;
     min-height: 100vh;
     padding: 2rem 1.5rem;
     -webkit-font-smoothing: antialiased;
+    background-size: cover;
+    background-position: center;
+    background-repeat: no-repeat;
+    background-attachment: fixed;
+    position: relative;
+    transition: background-image 0.8s ease;
   }
-  .container { max-width: 960px; width: 100%; }
+  /* Glass overlay */
+  body::before {
+    content: "";
+    position: fixed; top: 0; left: 0; right: 0; bottom: 0;
+    background: rgba(255,255,255,0.55);
+    z-index: 0;
+  }
+  .container { max-width: 980px; width: 100%; position: relative; z-index: 1; }
+
+  /* ===== Top bar ===== */
+  .top-bar {
+    display: flex; justify-content: flex-end; align-items: center;
+    gap: 0.5rem; margin-bottom: 1rem;
+  }
+  .top-bar button, .top-bar select {
+    background: var(--card); border: 1px solid rgba(0,0,0,0.08);
+    border-radius: 22px; padding: 0.4rem 0.85rem;
+    font-size: 0.8rem; color: var(--text-light); cursor: pointer;
+    backdrop-filter: var(--blur); transition: all var(--transition);
+    font-family: inherit;
+  }
+  .top-bar button:hover, .top-bar select:hover { color: var(--text); border-color: var(--green); }
+  .top-bar select { appearance: none; padding-right: 1.5rem;
+    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 12 12'%3E%3Cpath d='M3 5l3 3 3-3' stroke='%236B7280' stroke-width='1.5' fill='none' stroke-linecap='round'/%3E%3C/svg%3E");
+    background-repeat: no-repeat; background-position: right 0.5rem center;
+  }
+
+  /* ===== Hero ===== */
   header {
-    text-align: center; padding: 1.5rem 0 2rem;
+    text-align: center; padding: 1.5rem 0 0.5rem;
   }
   header h1 {
-    font-size: 2.2rem; font-weight: 800; color: var(--text); letter-spacing: 2px;
-    display: flex; align-items: center; justify-content: center; gap: 0.5rem;
+    font-size: 2rem; font-weight: 800; color: var(--text); letter-spacing: 3px;
   }
-  header h1::before { content: "🌿"; font-size: 1.5rem; }
-  .search-box {
-    display: flex; justify-content: center; margin-bottom: 2rem;
+  .clock {
+    font-size: 0.85rem; color: var(--text-light);
+    margin-top: 0.35rem; font-weight: 500;
   }
-  .search-box input {
+
+  /* ===== Search ===== */
+  .search-row {
+    display: flex; justify-content: center; align-items: center;
+    margin: 1.5rem 0 2rem; gap: 0;
+  }
+  .search-engine {
+    background: var(--card); border: 1px solid rgba(0,0,0,0.08);
+    border-right: none; border-radius: 28px 0 0 28px;
+    padding: 0 0.3rem 0 0.9rem; cursor: pointer;
+    backdrop-filter: var(--blur);
+    font-size: 0.8rem; color: var(--text-light);
+    display: flex; align-items: center; gap: 0.35rem;
+    white-space: nowrap; transition: all var(--transition);
+  }
+  .search-engine:hover { color: var(--green); }
+  .search-engine .eng-icon { font-size: 1rem; }
+  .search-row input {
     width: 100%; max-width: 500px;
-    padding: 0.7rem 1.25rem;
-    border: 1.5px solid #ddd;
-    border-radius: 28px;
+    padding: 0.75rem 1.25rem;
+    border: 1px solid rgba(0,0,0,0.08); border-left: none;
+    border-radius: 0 28px 28px 0;
     font-size: 0.95rem; outline: none;
-    transition: border-color var(--transition), box-shadow var(--transition);
-    background: var(--card);
+    transition: all var(--transition);
+    background: var(--card); backdrop-filter: var(--blur);
+    color: var(--text);
   }
-  .search-box input:focus { border-color: var(--green); box-shadow: 0 0 0 3px rgba(76,175,80,0.15); }
-  .category {
-    margin-bottom: 2.5rem;
+  .search-row input:focus { border-color: var(--green); box-shadow: 0 0 0 3px rgba(76,175,80,0.15); }
+
+  .engines-popup {
+    display: none; position: absolute;
+    left: 0; top: 100%; margin-top: 4px;
+    background: var(--card); border-radius: 10px;
+    box-shadow: 0 4px 16px rgba(0,0,0,0.1);
+    padding: 0.3rem 0; z-index: 10; min-width: 130px;
+    backdrop-filter: blur(16px); border: 1px solid rgba(0,0,0,0.06);
   }
+  .engines-popup.show { display: block; }
+  .engines-popup div {
+    padding: 0.4rem 0.85rem; cursor: pointer;
+    font-size: 0.82rem; transition: background var(--transition);
+  }
+  .engines-popup div:hover { background: var(--green-pale); }
+  .engines-popup div.active { color: var(--green); font-weight: 600; }
+
+  /* ===== Cards ===== */
+  .category { margin-bottom: 2.2rem; }
   .category h2 {
-    font-size: 1.05rem; font-weight: 600; color: var(--text-light);
-    margin-bottom: 1rem; padding-left: 0.6rem;
+    font-size: 0.95rem; font-weight: 600; color: var(--text-light);
+    margin-bottom: 0.85rem; padding-left: 0.6rem;
     border-left: 3px solid var(--green);
   }
   .grid {
     display: grid;
-    grid-template-columns: repeat(auto-fill, minmax(140px, 1fr));
-    gap: 0.75rem;
+    grid-template-columns: repeat(auto-fill, minmax(130px, 1fr));
+    gap: 0.6rem;
   }
   .card {
-    background: var(--card);
-    border-radius: var(--radius);
-    padding: 1.15rem 0.75rem;
-    text-align: center;
-    box-shadow: var(--shadow);
+    background: var(--card); backdrop-filter: var(--blur);
+    border-radius: var(--radius); padding: 1rem 0.6rem;
+    text-align: center; box-shadow: var(--shadow);
     transition: all var(--transition);
-    text-decoration: none;
-    color: var(--text);
+    text-decoration: none; color: var(--text);
     display: flex; flex-direction: column; align-items: center; gap: 0.55rem;
-    cursor: pointer;
+    cursor: pointer; position: relative; overflow: hidden;
   }
-  .card:hover {
-    transform: translateY(-3px);
-    box-shadow: var(--shadow-hover);
-    border-bottom: 3px solid var(--green);
-    padding-bottom: calc(1.15rem - 3px);
+  .card::after {
+    content: ""; position: absolute; bottom: 0; left: 0; right: 0;
+    height: 3px; background: var(--green);
+    transform: scaleX(0); transition: transform var(--transition);
   }
+  .card:hover { transform: translateY(-3px); box-shadow: var(--shadow-hover); }
+  .card:hover::after { transform: scaleX(1); }
   .card img {
-    width: 36px; height: 36px;
-    border-radius: 8px;
-    background: var(--bg);
-    object-fit: contain;
-    padding: 2px;
+    width: 34px; height: 34px; border-radius: 8px;
+    background: transparent; object-fit: contain;
+    transition: transform var(--transition);
   }
-  .card .icon-fallback {
-    width: 36px; height: 36px;
-    border-radius: 8px;
-    background: var(--green-pale);
-    color: var(--green-dark);
+  .card:hover img { transform: scale(1.1); }
+  .card .icon-letter {
+    width: 34px; height: 34px; border-radius: 8px;
+    background: var(--green-pale); color: var(--green-dark);
     display: flex; align-items: center; justify-content: center;
     font-size: 0.9rem; font-weight: 700;
   }
   .card span {
-    font-size: 0.85rem; font-weight: 500;
-    line-height: 1.3; word-break: break-word;
+    font-size: 0.82rem; font-weight: 500; line-height: 1.3; word-break: break-word;
   }
-  footer {
-    text-align: center; padding: 2rem 0;
-    color: var(--text-light); font-size: 0.8rem;
+
+  /* ===== Background picker ===== */
+  .bg-options {
+    display: none; position: fixed; top: 0; left: 0; right: 0; bottom: 0;
+    background: rgba(0,0,0,0.35); z-index: 100;
+    justify-content: center; align-items: center;
   }
+  .bg-options.show { display: flex; }
+  .bg-panel {
+    background: #fff; border-radius: 16px; padding: 1.5rem;
+    max-width: 500px; width: 90%;
+    box-shadow: 0 12px 40px rgba(0,0,0,0.15);
+  }
+  .bg-panel h3 { font-size: 1.1rem; margin-bottom: 1rem; }
+  .bg-presets {
+    display: grid; grid-template-columns: repeat(auto-fill, minmax(80px, 1fr));
+    gap: 0.5rem; margin-bottom: 1rem;
+  }
+  .bg-preset {
+    height: 60px; border-radius: 10px; cursor: pointer;
+    background-size: cover; background-position: center;
+    border: 2px solid transparent; transition: all var(--transition);
+  }
+  .bg-preset:hover { transform: scale(1.05); }
+  .bg-preset.active { border-color: var(--green); box-shadow: 0 0 0 3px rgba(76,175,80,0.25); }
+  .bg-panel input { width: 100%; padding: 0.5rem 0.75rem; border: 1px solid #ddd;
+    border-radius: 8px; font-size: 0.85rem; outline: none; }
+  .bg-panel .btn-row { display: flex; gap: 0.5rem; margin-top: 0.75rem; justify-content: flex-end; }
+  .bg-panel .btn {
+    padding: 0.4rem 1rem; border-radius: 8px; border: none; cursor: pointer;
+    font-size: 0.85rem; font-family: inherit;
+  }
+  .btn-primary { background: var(--green); color: #fff; }
+  .btn-secondary { background: #eee; color: var(--text); }
+
+  /* ===== Footer ===== */
+  footer { text-align: center; padding: 1.5rem 0; color: var(--text-light); font-size: 0.78rem; }
   footer a { color: var(--green); }
+
   @media (max-width: 600px) {
     .grid { grid-template-columns: repeat(3, 1fr); }
-    header h1 { font-size: 1.6rem; }
+    header h1 { font-size: 1.5rem; }
   }
 </style>
 </head>
 <body>
 <div class="container">
+  <!-- Top controls -->
+  <div class="top-bar">
+    <button onclick="toggleBgPicker()" title="切换背景">🖼 背景</button>
+  </div>
+
+  <!-- Header -->
   <header>
     <h1>128</h1>
+    <div class="clock" id="clock"></div>
   </header>
-  <div class="search-box">
+
+  <!-- Search -->
+  <div class="search-row" style="position:relative">
+    <div class="search-engine" onclick="toggleEngines()">
+      <span class="eng-icon" id="eng-icon">🔍</span>
+      <span id="eng-label">Google</span>
+      <span style="font-size:0.55rem;margin-left:0.15rem">▼</span>
+    </div>
+    <div class="engines-popup" id="engines-popup"></div>
     <input type="text" id="search" placeholder="搜索或输入网址..." autofocus>
   </div>
+
+  <!-- Cards -->
   <div id="content"></div>
+
+  <!-- Footer -->
   <footer>
     <a href="https://Bahu-Tang.github.io">主页</a> ·
     <a href="https://Bahu-Tang.github.io/bookmarks/">收藏夹</a>
   </footer>
 </div>
-<script>
-const DATA = [{"category": "社交 / 媒体", "items": [{"title": "哔哩哔哩 (゜-゜)つロ 干杯~-bilibili", "url": "https://www.bilibili.com/", "icon": "data:image/png;base64,data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABAAAAAQCAYAAAAf8/9hAAACaElEQVQ4jY2SP2gUQRSHvzcze5c977jDiBhQTGEngqIBAyIkRYKNIJggYiOCImprJXiWNnYiEaJoIXIKgiBIIImFqGCMQv7YiWIjGjS62c1lb2fGYs0ZG8kPBh7vzbz38XsDqxqZCrg7f47R6V4Ahhq6XVuNR6d7uTt/jpGpYLUk1L2CK7Dt6C4qlXe00gWa8RFO7X7OWo2+O0DHhkcEhU1E0W4+P5yBy0j7wu23NaR4g7B8jJXkO5kdwuvX+Rjbg9EPKJY2srx0H79ylpN7FnOCay9CNtXqoI7jfQWhig7AWbBZAoA2JZQG2wLPT0QicPdYWKwbOqtXqXReIPoB3iV4iXCpQxDAAODsL6z1gEIwIFupdF7ESyjcmY/RgaLVOoxTrwBoWk+HFirWAxBpaecAlNtPEDzGtaxB6RKt9CfdXyfp68tYjyYnJ/m4eQVjqgbwKBE+dIU0GgnLu8bw3rOSHOL03rzhzTeGQvgUpSCcGeBDV4hxAniD9wIIsU5RPQGFrB/vwTY7crOAxlyRNOhHBOKegDhLqToBUH+gPLXE8Kk7JUsnyLJxPreW28jzX5tk2ThZOsGn7pRakpPnrkpulCpp6uII5wZ4MjtIvS8Dcrp6X0ZpdpBwboC6OFSp/UsNIDjvCXfEAAwP2zV2+Xa0Nl94G5Ps9IAYnE0ICkXi9/005l7ypaDYYH17hauKtBBrYUvqiKWXICjisiWD97coV88T/RgjyRKqrXzXy/LPe4yDqoMEj9ElylVYXLiuOXjiGcpqUNuBAHD/PaIsyDeayQ2+L176O2ZkqoQpa9ajbMlyZl8C8BsqkQfT9fYhAwAAAABJRU5ErkJggg=="}, {"title": "QQ邮箱", "url": "https://mail.qq.com/", "icon": ""}, {"title": "公众号", "url": "https://mp.weixin.qq.com/cgi-bin/appmsgcopyright?action=orignal&type=1&token=54797716&lang=zh_CN", "icon": "data:image/png;base64,data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABAAAAAQCAYAAAAf8/9hAAAC2klEQVQ4jW2TT2jcVRDHPzPv7WZ3s9FQLSZQEQ+W0kqh2DbaampAiwf/XTZaW0xD0UO9iEjRg7AnpYh6EVQKNSGtggFvCmrbhBCtYi+VpqKIICqsq5U2bpL97e+9Nx6aJpE6t4H5fmfm+50R1oYhCAbA7MgWp7IZUYkuzrFzfO66GkCuA596eqOv+qOSpwdxWsZIRGub53SYz1/koRM/re0p/wFP7dvky5Uv1OsGm+9EceIoezCwkoM8/pln6TF2Hz+7jDVdoTHE+663xekGu5ItSbXgcPJ76oTXU8j35POLt1mKNR/yMra6hK4kM/vvBAZpdXKpFsuWp7FObtvDvWNHrJ1ucegRFsJ2ugodZJXCL09gblZvFRGhpD6G+E7c/f5hAM49W4jzS02v7g7tqz5nl5fwZ0c/De3WIYYmG8Kb95TZens/BddVcP4iIhfyH3/eweh0Rh2hTrommP/q4Gti8hKlAmkh+zw2vn1E/d2btvlK6Sh7Jr43L+fN7ANGp9t8VNMVcB2ljoZdYy+b2QztENW7va5v4FFNIQ1IyT/OqSc2hnb2TLBwBoDhyZXO1EnMXXXMEm+hImCmZg+rBusXJ86XKycodi5w38Q3V1VZtheEOkqtBkBk4UvLwiWcIso6xXHJFnIU2eGte5qZ/ZupL9/FNZo6ieHJyGd7u2n81hIvTSk6YrJffHB2umAptywlXV/ZqX/HoVTnYuHrkbvyK1mTbiLW1e9VhzGTEP94RYL1WidKdPaxALjZgye1UnyKxdBKyvMqdj/ok2RhUSCZUqKvp5Q3/nkAsV+L63t+iM3WyTg4fkABYjt7wRbDd1LxVRfTMRE9wFKuAjfgtVd6y6XYbL3L4PgZXyy+kVrtqdhqHsaQ1Wea2nezK5frmqcaqjeKUDQsBxrRyXtp4PirzI5scSntioMTx/7/mQA+qfX5m3q2WpR1IvFyyLJzDH3415p7WLUX+BdkGFenx7W1iAAAAABJRU5ErkJggg=="}, {"title": "知乎", "url": "https://www.zhihu.com/", "icon": "data:image/png;base64,data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABAAAAAQCAYAAAAf8/9hAAAAAXNSR0IArs4c6QAAAnJJREFUOI09002oVXUUBfDfPufcq+Z7pmZZoEFUFFGjpJFCg6KJ0UCCIAjC8kGDmuQsTIoGQQ4yLCIsioyKphZNGpQ8atAk6UlBIlmGVH6l917fOee/G5xXgw17shdrrb1W2J9jxUvGnhbW1yP6ChVqoUG9MpU0Emr/CG/72QuNqVfMeV4nVfQzXCNjJITMTgSQiGhlSfPm7XW7EvbmZY01KqlW77pHfnGSyRRjaSzE/4xopAarULnc6K2tQikT1cPb5MGH2PkxZQMa8csltq5n9XiQ0Ic4c5W/rkqN+UanIHTy0btEU3P0MXr8ep4jJ9i/nbNTrnTizg3i9ePyxWM066iiE2XKzZvFjlvY9QFLZ3n1Gx48xMlz/DkV24+w412+PCU3joVWRE+VHQrLM+47wLFFShFnLjD5g4uTwcDpjPYKV3uZKXVkJxs5AExm7N7BDfdz2ya5sE3cu0lewLRllCynrIqIgo7oRROVzGWxZR13X0/dsHENv11Q5hrRFkoherRCrjy0RSerTIxYOs3uN+TCh1yc8f534rnD8ugSa0d0y8NBXwbGOrIXlRxQR2M07H2A8xN5aBdPPSK6ltUNpWVErG1WGHRERyNkhGivcNONYt9OnnhPnPqbzxbEkx/Ja1fx/bOiL3Lrel5bHIzNliYILVuu49Nn+Pw4n3xLtvLgV5z4nTte5vDj8sDX/HCGWYUxXauK2JMXs5jbvIFbN4nFn6RKRJD9sKtXaFcrEW4UY4RZlb23rFadPScWf5TqIftp8EQMpkVFNehPRaVW67zZuGSfSq2xp2rMlfJf75BDIxWRZdCsFirnTbzjtH3/AgzbFQYkJRAdAAAAAElFTkSuQmCC"}, {"title": "豆瓣", "url": "https://www.douban.com/", "icon": "data:image/png;base64,data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABAAAAAQCAIAAACQkWg2AAAAAXNSR0IArs4c6QAAAUBJREFUOI1jtJjoeuLZGQbigIWUCSNDuSCRqmGgXNBjVvB/IoDHrGCGckEWBgaGW6/u1G9vJ2jyrVd3GBgYoE4S+M9JjGs+MH5ngbC0pXSP5O/4//8/IyPjf1RFjAwMDAwMNhM9jj4/xcDAwIIsd+/dg6JNZb9/fmVgYWf4z8Dw/zfDv3+TQ6cqCytCFAj850TRwM7GefDaMTRnfP3zE5mLouHnr+8KEkpoGrhZ2HFqUBZWvFB8GL+/oRquPrvsMStkR9qav///GXXZcrByMjAw/Pj9/WL50W+/fwTNj7n67DLE+wgbTt49fv/dQzkBmYdvHiAb+fLzy5339gkwcEKCngki+oHx+wfG72svbWZmYo40jYAIQhhrL22GKICZUC44+fAsYpLG5MOzoEnjyIMTwpxC+P0KUcbAwMBIavIGAK7GvDMHrM8EAAAAAElFTkSuQmCC"}, {"title": "抖音", "url": "https://www.douyin.com/", "icon": "data:image/png;base64,data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABAAAAAQCAYAAAAf8/9hAAAAAXNSR0IArs4c6QAAAiFJREFUOI2Vk0FIlFEUhb/7/+qM4zQZlBBSmwqLWllBpNEi2hSRQYsgKFwEIZW0atmisDCjCIJqF0YtIkiYbdBKgqBNiGOoO81BbaFj4dh/T4t5I38thC7cxbvc8+47950DtcgCd4ASUAG8ngYeY261cwUYAwaBXMBSAIqA/jOLQB7gQShUgSQ9mUzGd4689TPDw95uOY/i2A1LgNWAuQswHoBJKDqgBhD5Ft1YXZYk3es+L8Abaj31/kmA5TRnzEQcq8lM5FvUX56RJ4nKE9M63HNWtG7yVH+F+sQ6OErzzDfr5o+yfO23JGlN0svbT7QZnIZIgEf1TWJmJuH7Omh8eJ9DAwMULMdaJsam5vl07hbf333g0mwjBTDcsQB1IpOBc6xL3Ytz+iJJU8vqbT2oC5VZqbSoK2xXDnSSNmWJPLWvQCGOfcfoRy1I0tB7jXZe1JHCbvWulKXxed3IdAhbp5e6wMxjENu2qr+6JI3N6TF7a7vINOnaz0X5xIKuN+wRoCaitBY8QqpxqVbVuvKLZEuWz+3Ntbd1dtLSmIOlCu5J4CsCeD0qkZkDfurRkEvS128TOvr8qU7MTKskSVdfqIusiJClv7wmASaBxCCJmrN68+q1qx5VSYNFPeOAYB2cFtI4QY4K8kxi8L79x714us9HdvX4Zdqcv6cmQfYKNiC/oZlsQzMV6nvIBYuOAZU4ipw4cjPzGPtXuqVg/SzAH8pkWJIQCxC+AAAAAElFTkSuQmCC"}, {"title": "163网易免费邮", "url": "https://mail.163.com/#module=read.ReadModule%7C%7B%22area%22%3A%22normal%22%2C%22isThread%22%3Afalse%2C%22viewType%22%3A%22%22%2C%22id%22%3A%2251%3A1tbiMw6JPWcjI4865wAAs8%22%2C%22fid%22%3A3%7D", "icon": "data:image/png;base64,data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABAAAAAQCAYAAAAf8/9hAAAAAXNSR0IArs4c6QAAAHBJREFUOI2tUcEKwFAIcqP//+V2CsI03tg8VViZAR9xqWICaciDPwq9uRpUTQ5gYuU95iHhr9OSGesA58XRgASyK1iMfbeVz7o3gvKAF0iJ/L6Tdw7wpp73OBzJqWAENyvnT74x5BeRpVsT3Qlb/Rc8qQI6C5JjgVkAAAAASUVORK5CYII="}, {"title": "GitHub", "url": "https://github.com/", "icon": "data:image/png;base64,data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABAAAAAQCAYAAAAf8/9hAAACpklEQVQ4jW2SQWucVRSGn3Pu/WYmTUnJJDVSsKnxa5O0FMFNK9SFexHElQu7EN0oCt0ILQquxIUi2Fqx+gcERXFbUaqrCorFWDuJTDKWNEQbO5bWJN/ce46LTOgQ+q7OhXPPy/ucI2xJAAeYLGceD6F4UeFJhwfBRZAVQ741S58sLVy9zIBkoC6mZo6+I/CyqDZwx90dQEQEEdx83d3Ptlu/ngZse4BCWUzNND6PsXjKzGDr38D8e28NSkq9L9rX5p4DcgB8anrfe7Va7WRK6Zvs+Q1BxlVkr7mtOHRFpHD8ck75NO67arX60yOj4/Vba39dlAPl7PEQ46UQi5B61cft1twrQDx06NGJqvp3DSDX683rrdZNoJqaPvp+LIpXc+5tpl4+ETWEl0S15pYRSEAA8vz8leUBPjf6eYLgycyCiO5StRdUhCdwdzNf3+ilD4Hcbx4EvF3nRO88lu/g7iJyQh3ZJ4iA/73cvrbYb7QBctsUHaDTav3pcEMEBHlYAfEt7MPNZjm0w3mnZGJiouEw4i6CEFSEDu6IyNjuseJY3yneJ0IEvL5n7LiKPNC/kY6S7QdUAblbxPjp5MGDs2zB3Bkh7S8PHylCOAsgKuLu38tkOftYjPEnc/9ARR7SEJ4xy19ZtrcW53+7ArC/PHykKOLr7v6sigwDyd0t53xMO3/8/rO7fRRDeK2qqrctp3dxdv+3mW7fs682BE6qyLA76xpCdOzc0sLVXxTQdt485WaX6o36Z+b2o5udWe20tjfC9ZSWzX0VIIQwlFP6up02zwA6AOpA45HpkQsa9XnLxtrG7dHu0lIXoFmWI6NxqCui2SxfaLfmTgEV/avrU+6mW2urX+4Z3/uduN9cydVFut0EsP5Pk9Gxop6Tv7m4MHd+4Nj4HxrWR3D6SUWaAAAAAElFTkSuQmCC"}, {"title": "Notion", "url": "https://www.notion.com/zh-cn", "icon": "data:image/png;base64,data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABAAAAAQCAYAAAAf8/9hAAAAAXNSR0IArs4c6QAAAixJREFUOI19kDFIW2EUhb9XTIY8oS9gXjAZnNKli10FaRxc4uLUgktF1MG5k1kySAazOAhuJYIInXTo4CQ4JpuQdnB5OuRBkiG/kP8NL8Pp0JiaNnrhwrlw78c515HkAh+Bd0AOeAukRzpjrfWiKEobYxLz8/Pt2dnZsuM4p4xqBvh2eXn56fb2ljAM6ff7hGGItRYA13VJpVJ4nkcYhvn9/f26pC/AZ8dxekjq+L6vUqmkRqOhIAgUx7GmVRAEWl9fV6VSkbV2IKnkSOpks1m/2+2yubnJ6uoqxhistfR6PaIoGus4jnl4eODu7o6VlRWur69/zvCs6vU6xhgKhQLJZJKFhQUSiQT5fB7P88ZtrWV5eRkgMwEAuLi4GOswDMnlcgCcn59zdXXF3Nwc29vbfw+efgDozyhVKhUlEgkBOjo6kiQ1Gg2l02nFcazBYCDf9yWpMxUgSb7vy/M8eZ6nVqulIAiejiYAb/6N8LwODg4wxrC1tUUURVN3XgUUi0V2dnZoNptUq9XpS69FaLVa6vf7KhQKAl6M8GtxcXEq3BiD53kcHx+/bFNSsdlsjr8uSbVaTbu7u9rb2xs7Ojs70+Hh4X8OnBGkVq1Wv5bLZQaDwYQDYwzD4ZB2u83j4yPGGLrdLicnJ3Q6ne4TwAUaa2tr729ubiYcJpNJcrkcruuSyWTG89LSEhsbGz+cZ1EKwPf7+/sPqVTKSrLZbNYAQ8ACvZEeAu1Rn/4Gz22Vi9VpXl8AAAAASUVORK5CYII="}, {"title": "Youtube", "url": "https://www.youtube.com/", "icon": "data:image/png;base64,data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABAAAAAQCAYAAAAf8/9hAAAAAXNSR0IArs4c6QAAAYVJREFUOI2t079qVEEUx/HPmXvXuAgBjZUkmtgpghhNIYJv4APY+QZWPkWsBRsLWx9CJIhgsBDENmhSBaJBlBh374zF3E02qWTxwDB/OGfmzPn+TkAhkNR5ym73+w/l5LmCHJRJ8ExWiKiLG0ucWSNfoDlHHqIlmt61w5h0QPeL9I0/m+HTdhSrD0gvcLE6pzpF1ESPMp5Yniz2yI+iWH1Dc59uRKTeuzCqSaSGfBQUdZRMM6DbSJSrdJnSUBIautbKldZgMJB/DKTUEu2xT2lqTCwn0kJ9udZDiuBnePwwvH7O3Tvk/eAwSHH8v0iUhYSzx/+LmNxj3HHvJhsvefWM5UWMiJimNkyzIpxYi98Y9tUuSqkvtA1vP/JknXfv+0TnKHkayUEUt7aJS7X4EbXQHStL7OyG0T5pvshlCmGZ6G+nJbZoFk9ibIqtLz3G+SmM0WPUYxxvtVinXCOdElLbK96pFsmqQsse8bSX8vXLzK2RzuMfpBzfOdwMn7/+r2aavZ3/Apxdilm4NqefAAAAAElFTkSuQmCC"}, {"title": "CSDN", "url": "https://www.csdn.net/", "icon": "data:image/png;base64,data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABAAAAAQCAIAAACQkWg2AAAB/klEQVQ4jU2SPWtUYRCFz5n3bvbubhISoyJiJxEsEkglghZJZUTUJkhAUoja2WihgohFQPAXaGVhk8rGRkQrURDEFOL3B2idkDXJ7t3Nve8ci7ubZOozZ2aeMyzmptAvSSBpBgkxgkQIkOQOkgCAZLeaJEi1NkBDWgeEzXUkFVZTuIPcaSjVkqPb5bEZTp/H4aPMc//0Hs+X9Psb0hrlILm9kuRw5+XbNjsPuX//yNEx239Inbbfu6IvH5jWISU9fzNlmV26FWbn/d0rf7SI5oosaPosF25gZC9iLH1ZzE0JRLeN8YnwYEl/fsSb8+xkTOvyiK0O9h3ERhMSAZAGgKTy3E6eppmePcHmOhtDgmjG2iDXVtjnAcAAyCNrDYxPSNLXZVZTxYIlZTmSBKSkciUrb0BSwfAe5DnW11DmUE7u6bhN3/opRHTbSALSGgSaARDAEOCuYmu72QAwJGq39OszLXDqhP6tKjrc6VEbTdUaHDugIufODRAt6OVTxcIWrtuZi6imCokGUkwet7sPbfExBqpy72Etc0C7xVMX7OodVCroZGquojHIoRECvvzG71+DnLRdSQPIWhiftJlzODLJ4VF1Mvz9qeXXevsCRcEQ+hN2Ps/UaaPIUWswJJKjm6EoWB8syZLsPV8PgiLTGlhHjIoFSaR10OQRpSPwH79sFlWOAVADAAAAAElFTkSuQmCC"}]}, {"category": "AI 大模型", "items": [{"title": "DeepSeek 开放平台", "url": "https://platform.deepseek.com/api_keys", "icon": "data:image/png;base64,data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABAAAAAQCAYAAAAf8/9hAAABUklEQVQ4jX3Tv0tWYRQH8M/7XrPBFm0qySVwcdJwqi1oaMyhP0CEcDCCsMFZcBGXKJCgoC1agkCiQV0DEaMhh8AlKhcNksI0W743Hl7f7gOX+5xzvud7fj78/7TQk38ttxrw2k3GLrg2WlVhOEEv+hJ5CJM4xBdcwQg+Ffh/qcEDbGMvDgcBjcU+jW+YwFlcw/2aZCHgzu8QqziP0egO8DH3F3C1i+Nv/MFR5K2UNldg1nEJlvEGU3iErwEchWQn8jvcjW627Ooa7hXyBTyN0zGe4SZ+FLq6LxW8wus0s7cgelJkcgPzKW0H58oMZsJ6MXJPwb4Zkl/Yz32xY3r6sZss6jOeKMOZxElq38BAt+26HdDzlLGAD7iM6/hZRO/rXOlauBPQd3wu9mAJL7GS+d8Kvt2NZASPA3yPt3iIwdjLJp86JWOFM03gJpKqQ1c1PeO/a/JedC9qPyEAAAAASUVORK5CYII="}, {"title": "Claude", "url": "https://claude.ai/login", "icon": "data:image/png;base64,data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABAAAAAQCAYAAAAf8/9hAAACYElEQVQ4jY2TzWvUVxiFn3N/k5n4AdoiVpTWD6ymBlRsAlWLmyq4cGHEaRKRblposRsDIRN1EyzUsS24caELVwqJRhEUFP8AQVCRCKnJNCpFqEFKbLEkTpzfPS6cyCSK9uzOe9/7vPfCeWGGSoW2zlJX+7YpP9iTzw51tTXN7JtSqDWPOvKzjI9Y8aTz+QQgea69Urz0vwAfH+ufMJwClg8vT1peVbUC6wHA/UL+k+FC681SoW3P1J0MwL1C26aE2FGpZDodJg6FmP3a8gHDhZK1kOCBh/t3zp8kXAMaUPS0F2TEhNHWJBNvy/XN0RwWbPijq7UFewkwMFmfOw00gM6sKp7rnQb4tNh3J60k68GDcrwSxFLEn1EcslhEdAtmB/D787Tuh9pvq9a4pyeUxu/tQxSBOdVyGcgBKWIjZlJmg6HRIVzRUHf7duEvFBkzPDX8K3k2cARYVsOvVGFZ4C74RproRMZ4KNhLY9D8QFygSBaUM5jpeoq5iLhO8N9Ow5PPfu4b1IwmRrrzK1OHo5hmxGIgqR7dsnQee3OALw0fIHdmakM0Xhd+Ss0+m+MSgHOg9cBiYBn22nRW3L2axkqpPLzqr9zjkdeA8Wy4hag4agtys+ErpKIijxFzgbUS/yQT4fLd9P6udb/1Ds1M4p5nY/OakiStExzOKLYqeo2l0UqMHcAiW2PIZ+uT8sU3orz66NmB7If/zY0Ovba+XVnsHyGoSTDa+Gv/KPCjcHcM2auV6G/eugtJ+YWEv2v4pe/V8tifS3G0OqAPaa+z5WdV4PtVKrR+/+Bg+0fv6nkJeHMA2HVTxIkAAAAASUVORK5CYII="}, {"title": "ChatGPT", "url": "https://chatgpt.com/", "icon": "data:image/png;base64,data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABAAAAAQCAYAAAAf8/9hAAACZUlEQVQ4jZ2TwSvzcRzHXz/71m9L+oWQhbhwsuSipISEdpGk/QFbyk0cXLjIH+ColgMXyYabg2eRonaQmovUpmZJsfjVNvvtZ5/nYns2T3rqeR8/vb/vT5/39/0GQESGRSQiIjn5N3Jf3GEqHt99Z+XzeTFNU2zb/knoTkSGNRH5BYzyBRHh/Pyco6MjLMuipaWFmZkZ3G43hmGglKICEU1EsoCrNIlGo2xtbTE/P4+u62xsbJDJZOjo6KC5uZlAIEBbW1uJntNERAAsyyIUCrG9vc3CwgKGYbC/v4/H42FgYIDW1lZOT0+JxWKsr6/jdDoBqClJHR8fE41G6ezspLa2lrOzM+bm5mhsbCQUCrG5uUl3dzeZTIZ4PF6+QZW2X1xc4Pf7CYfDFItF8vk8V1dXpFIpJiYmcDgc7OzscHt7y+fnZ1mgpmRcsVhE13WUUqTTaQzDwO/3s7a2xsnJCff39wQCAYaGhri5uakW0HWd3t5e9vb2mJqaIpVK8fT0hFIK27Zpb2+nvr6eSCSCz+fj+voa27b/nADQ19fH8vIyLy8veL1eurq6WF1dxe12k81maWho4Pn5mY+PDxwOB5qmVQsopejv78fn83FwcIDL5WJsbIy6ujouLy/RNI2Hhwd2d3fLnlT9Qk9PDwDJZJKlpSWmp6d5fHzk8PCQ8fFxTNMkHo8zMjLC5ORk2YOqICUSCYLBIOl0mkQiQVNTEysrK7y9vREMBllcXMTj8VQmMfdXlAuFAu/v7ySTScLhMK+vrzidTmZnZxkcHOQbIj+WSUSkUCiIaZpiWdaPZaps5H/V+TfdOM+b+EhDGQAAAABJRU5ErkJggg=="}, {"title": "DeepSeek - 探索未至之境", "url": "https://chat.deepseek.com/", "icon": "data:image/png;base64,data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABAAAAAQCAYAAAAf8/9hAAACcklEQVQ4jY2TO4icZRSGn/f7/v+fnVmzkEajomKjMIIQQ1C0WRHRzWDhZbAJiAHNZhPBLmJjCkWx0sLdmCAIwcZRC82IES+DKNgYxCKgnQQRkRCNy1z+y/darEtWyYKnOncOh/eBbc1aXHQG1mZ82b+SHXPYvniFvmMOYP1rY7fv4qZdzDV/0MQ2u7KMh5uG0cdv8l3vEHfUNTvPnNRnW2f+OVHuHfbRKA7YXB13eAosxEKdcswekJHv7FzFC/uWveKc07Fhr+EuAfQONa+0OuFoNTUgJEjJxKgqJb4Z/8VjRae6sT2fn62mjG3Oz81z62TdAy0tV/cURfa1BAhSDcmuMRGTWh3FcsoPs0vcne/g2SzjRYC64avKk/1ZCOGJpuZTEu9Z7FbwI1mua5rSDUFhOvHPWabbiwV/Se13HIJT4rnhql4FCLJuSSl9cvq4Tg7XtFJV2l2VvB1yxZBh7NFsRi8Eunk7vGbjqmbjkX3HQOBPBd0HVrfv4swJ/Tpc1ZOp4i2JEKP2K1I3tV4POXWyz88u8hMAAzVB6PMQtHT/Aa49N1DJojOAj37nYF35+5ApRvwh8mFMZvv90UDrm6IKKXEKuNDu+AQAI9UPrnjvIrQnpR5PDZWCWjFoYTbmbFOGlzYUIAOE4Zou1olnio56Dx3xqW7fRXR6dOf1fFuIpixZkjzNWggxcslsq6S1KaR9B72ctbyWGi5h1uc6um42caWgN1LtG0KmecTNTc3zw1V9AA6gtAUU+YGnfFuec0Rwb8Klgn7D/DhuePmL4/ql23dxbqByO/ouw9R/N+552vn/guu/S/p9x62ZjXh7jP8GIyojXsMDG+sAAAAASUVORK5CYII="}, {"title": "OpenCode | 文档", "url": "https://opencode.ai/docs/zh-cn", "icon": "data:image/png;base64,data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABAAAAAQCAIAAACQkWg2AAABEUlEQVQ4jYVS7WrDMAyUbDVZnKQJ9EkKo+zn6BuuLzUKg75K82GPgG3th5ibJdmmf7bOd9L58NC2AMDMiAi/VwKQnBGRmUMIm2itdaKjOUH7rZagghvHcakQQmia5v16repaKaUQASAyxxjHYXg5nbquI6KlQtO2xhjnXKKv61rmSbKPHWKMzGytfT4e+74HgP1+/3G7AUCMcblDGhcRnXMiQkTCPTfw8SAZ8no+f1oLAEVZaq2993PADwUhIyLa7f5XkAYze++F1XufLrdHkoYxRmx9KorFtyxtVUrlef52uaR2lmUhhG1bmbm736UtQzPzNE3jMMzXwHn4yqpaB5AB7DoaSWGFh7/CJ2nZrKTwBQDXrBUD82WbAAAAAElFTkSuQmCC"}, {"title": "豆包 - 字节跳动旗下 AI 智能助手", "url": "https://www.doubao.com/chat/?channel=bing_sem&source=dbweb_yl_sem_pinp_hexin_cpc_faxx_3&keywordid=77103638570968&Campaign=%E5%93%81%E7%89%8C%E8%AF%8D-%E6%A0%B8%E5%BF%83-%E8%B1%86%E5%8C%85web-%E5%8F%98%E4%BD%93%E6%8B%93%E5%B1%95%E8%AF%8D&AdGroup=%E5%93%81%E7%89%8C%E8%AF%8D-%E5%85%B6%E4%BB%96-%E5%8A%A0%E7%AC%A6%E5%8F%B7&CampaignId=485434536&AdGroupId=1233653106759400&MatchType=e&AdId=77103453651584&keyword=%EF%BC%9B%E8%B1%86%E5%8C%85&msclkid=244be0113bac1ac697cd891620d5c8f0&BidMatchType=be", "icon": "data:image/png;base64,data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABAAAAAQCAYAAAAf8/9hAAADYElEQVQ4jV2TXWhbdRyG39//JKf5Im2WmlZLkq3Vbk5dXYtSdB2CYmUgeCHeeTexmx8TxI+CH6CCQ/HCTaXgykQGYqlDmcjGxuzaMrW2nd2cduhc26QfaWmTfiQ55+Sc/+vFFIfv/fNePY8AAEiBCAHgpzl2KOi9ImqPvwq1JOBWkNGud1Z7lSPt6eDwjYzgn50YZSi5GQe1xr5AAL7xgWFcmRhhdawW9zz0qNSnYiiugxD9sWWrl+9LShkAhKR8O4ZgMsXjoYh0rhWovzr0lh7oP6r8hohd8RCpredd7Q/ox/a/opKNcbVewMncPB5/eAdKSkTYkMLBYFg611ahx88cl/PffG6kU0mprk0AysDa0rwM9h81erq7kJuz7HAUj8Tr9LsiQt+PWbaD7CrkRdPZwPDXxyQUDOnVYknFfAaePrAfNXV1/LT3M4yPDMnc1cv+UKRNC7FvPMsvfKaBLkOJXxvgtd/HsZSd0mVCUj7h+++8jkRLm6DiyNYtm/nUswfw29iINLe2AVr5XKBLUaHDdkDDgPz16xiKpbIoy5LdrS2yvLouzmIOa5kZrszPyROdDyI3dQXUgOOASrhbeRUktUdoD8hlp+G6LqLRKE9c+gOTU1n4BCjk8/LdufM0TBMtLa2wXQi1hutKgwIAEVx/tcvwPBc7G9MSJKACYahIBLnlAvpOn0O4th4dTfVQFZeQ6wb4DB9ntSdpUUBVMAxNQSJg8o23uwV1N6O0vILtTVvY/+ZLYgQDdKsMFDVo+EVEIaNIGfSbEChQIGDF5oX5RZm1LFpWmesTYzAqljAS5JnpPBYa74crPm2aENEYUspzezxXu0rA5LYWppu3ybRj8NjAqCxmZsRsSPLnyat88oVuXJhZQSAaEGpPXA8Vx6v0CACMLvBQtBrPFfJw7WJRmZGwshamGB7oBY2gZO7cQ9cQ1CWSDEQ2ubE4zI0NHG5NyPOKpCzn0F3ewMmaavjiibAqLM27NXMXeevOe5Fuvo1JZ5GObbmWbUs8AbO0gVOzM3iV/K8l9PVlghdXePi19z5xbmlI8YMXnyGnL5PZSZ7t/ZCRQIhbb9/hfPn9Lx+dmmD4X07+nzOAXfGb6vfGYps6dt19R3J7cxNOD/0we+nPa4N2af1IPp8fuoHl3/xmtIHDDCwdAAAAAElFTkSuQmCC"}, {"title": "opencode | 控制台", "url": "https://opencode.ai/workspace/wrk_01KS3XJFJ9GDHFRARBYZX9GY1M", "icon": "data:image/png;base64,data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABAAAAAQCAIAAACQkWg2AAAAP0lEQVQ4jWMUFhBgIAUwkaSaHA0syJw3799jVSQiKEglGzDNw7STGja4e3jg0UD7YCVZAyNy0qBJPDAOvsQHAHZRCpTooTQ6AAAAAElFTkSuQmCC"}, {"title": "DeepSeek 开放平台", "url": "https://platform.deepseek.com/usage", "icon": "data:image/png;base64,data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABAAAAAQCAYAAAAf8/9hAAABUklEQVQ4jX3Tv0tWYRQH8M/7XrPBFm0qySVwcdJwqi1oaMyhP0CEcDCCsMFZcBGXKJCgoC1agkCiQV0DEaMhh8AlKhcNksI0W743Hl7f7gOX+5xzvud7fj78/7TQk38ttxrw2k3GLrg2WlVhOEEv+hJ5CJM4xBdcwQg+Ffh/qcEDbGMvDgcBjcU+jW+YwFlcw/2aZCHgzu8QqziP0egO8DH3F3C1i+Nv/MFR5K2UNldg1nEJlvEGU3iErwEchWQn8jvcjW627Ooa7hXyBTyN0zGe4SZ+FLq6LxW8wus0s7cgelJkcgPzKW0H58oMZsJ6MXJPwb4Zkl/Yz32xY3r6sZss6jOeKMOZxElq38BAt+26HdDzlLGAD7iM6/hZRO/rXOlauBPQd3wu9mAJL7GS+d8Kvt2NZASPA3yPt3iIwdjLJp86JWOFM03gJpKqQ1c1PeO/a/JedC9qPyEAAAAASUVORK5CYII="}, {"title": "Login – Vercel", "url": "https://vercel.com/login", "icon": "data:image/png;base64,data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABAAAAAQCAYAAAAf8/9hAAABJ0lEQVQ4ja2TMYrCUBCGv/cMWcRusfAAeokE7NPZCFtsbedJYuUZFlxL8Qh6hxRpArF5hWtlCCiZbZ7Lxry4sLsD08z888Ew/0A9noAIeAcOwMXmwdYiq3HGAFgCJ0Ba8mQ1A9fw5sHgfW6+Q3xLbQg9zxPf99sgSztLBBxdoslkIrPZrA1wtLOsXIJ+vy+73U7SNJXRaNQGWQHkruZ8Ppfr9SoiIovFQrTWLkCOPVOtMRwOJUkSuYUxRoIgcAEuDYDWWuI4lvtYr9fS7XadgNoKQRCIMaYBKIpCptNpYwUP2AMvAEopxuMxeZ6TZVnNKJ1OhzAM2W63lGV5K++VPcUb8KyUotfrobV2WlVEOJ/PVFUF8AG8PjTSD/llpD9b+V+e6dfv/An3+wTVwO8WqgAAAABJRU5ErkJggg=="}, {"title": "微信登录", "url": "https://open.weixin.qq.com/connect/qrconnect?appid=wxdccadda88e2d98c6&redirect_uri=https%3A%2F%2Fwww.biaozhun.cc%2Fget-weixin-code.html%3Fappid%3Dwxdccadda88e2d98c6%26scope%3Dsnsapi_login%26redirect_uri%3Dhttps%3A%2F%2Fwww.biaozhun.org%2Fmember%2Fwx_login.php&response_type=code&scope=snsapi_login&state=undefined", "icon": "data:image/png;base64,data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABAAAAAQCAYAAAAf8/9hAAACVklEQVQ4jYWTsYsdZRTFf+fO7LxdV4Vskfd2RfCPiMbCRpJKEKJZi9Q2sRMllQjTmUaxkVjZBjSiIAQ2REI6NdvaBAKmSPY9XWNYNc95M3OPxZuNm8pTfXzfveccvsOBQ9QER3GDcrwzXh/vjNe5QfnE25FZAWCEMMDWd1tnnH6NzifAx4exXym1q9DV+6/f//bojqgJanJ8eXyyeEqfEnqZAHpYUg4yBZBA+of+kd+dnZv9SE0I4Lmvxqc8im8Qz7g3MQo8N04ngEKhNZFNokJg/lSTb9x7a/a9ti5vPO+q+omSCdCpY9f4OsQ7hDcASD2AvCR02iUngJKOqRaLl4KquhCrMaGlUakSxcW9s7MPEdeiCkUVQlxb3sVFlSppaWI1JlTVBW1+PblDwQv0pFZUuPUt5OtynHf4GIBSf1j5OdZprehFt9lTKOj5RVtXNueWR49jqSSNhP82Tnv4A2lduDFe2P9FqCaQHwypWkheuPdBtk5bSEJy2j7I1gv3QgJMgO2HYemmKsl2GhsIi1JIxjZLIosSCGPbTlWSxM0g209o+EeFwjgHBQ0WdUgEHJ57lRItTdJ+HHvb+7uZfi+qCGnpBJOH6sMymMRuI6KM1Sgy/f707O+3gpqYbk8v5aPuvAq1iFCpkJbqQkusKPS0Vij4rfurf3v65vQzIIIaA5qXix0KRogDp29jGtsMLubu/HPO+ah/mCdn27MvhkJlSY2oyTXWXvHCV9pF98H+s/t3J81k0+mJQqnUbG9j7x6v0j1uY00+0VCuMuL/8CUFHho84F84lT/uunoxgAAAAABJRU5ErkJggg=="}]}];
 
+<!-- Background picker overlay -->
+<div class="bg-options" id="bg-picker" onclick="this===event.target&&toggleBgPicker()">
+  <div class="bg-panel">
+    <h3>更换背景</h3>
+    <div class="bg-presets" id="bg-presets"></div>
+    <input type="text" id="bg-url" placeholder="或输入图片URL...">
+    <div class="btn-row">
+      <button class="btn btn-secondary" onclick="toggleBgPicker()">取消</button>
+      <button class="btn btn-primary" onclick="applyCustomBg()">应用</button>
+    </div>
+  </div>
+</div>
+
+<script>
+// ===== Data =====
+const DATA = [
+  {"category":"社交 / 媒体","items":[
+    {"title":"Bilibili","url":"https://www.bilibili.com/"},
+    {"title":"GitHub","url":"https://github.com/"},
+    {"title":"知乎","url":"https://www.zhihu.com/"},
+    {"title":"QQ邮箱","url":"https://mail.qq.com/"},
+    {"title":"网易邮箱","url":"https://mail.163.com/"},
+    {"title":"公众号","url":"https://mp.weixin.qq.com/"},
+    {"title":"豆瓣","url":"https://www.douban.com/"},
+    {"title":"抖音","url":"https://www.douyin.com/"},
+    {"title":"Notion","url":"https://www.notion.so/"},
+    {"title":"YouTube","url":"https://www.youtube.com/"},
+    {"title":"CSDN","url":"https://www.csdn.net/"}
+  ]},
+  {"category":"AI 大模型","items":[
+    {"title":"ChatGPT","url":"https://chatgpt.com/"},
+    {"title":"Claude","url":"https://claude.ai/"},
+    {"title":"DeepSeek","url":"https://chat.deepseek.com/"},
+    {"title":"豆包","url":"https://www.doubao.com/"},
+    {"title":"OpenCode","url":"https://opencode.ai/"},
+    {"title":"DeepSeek API","url":"https://platform.deepseek.com/"},
+    {"title":"Vercel","url":"https://vercel.com/"},
+    {"title":"OpenCode控制台","url":"https://opencode.ai/workspace/wrk_01KS3XJFJ9GDHFRARBYZX9GY1M"}
+  ]}
+];
+
+// ===== Favicons via Google service =====
+function getFavicon(url) {
+  const domain = new URL(url).hostname;
+  return 'https://www.google.com/s2/favicons?domain=' + domain + '&sz=64';
+}
+
+// ===== Search engines =====
+const ENGINES = [
+  { name: 'Google', icon: '🔍', search: 'https://www.google.com/search?q=' },
+  { name: 'Baidu', icon: '🔎', search: 'https://www.baidu.com/s?wd=' },
+  { name: 'Bing', icon: '🔎', search: 'https://www.bing.com/search?q=' },
+  { name: 'DuckDuckGo', icon: '🦆', search: 'https://duckduckgo.com/?q=' }
+];
+
+function getEngine() { return parseInt(localStorage.getItem('nt-engine')||'0'); }
+function setEngine(i) { localStorage.setItem('nt-engine',i); updateEngineUI(); }
+function updateEngineUI() {
+  const e = ENGINES[getEngine()];
+  document.getElementById('eng-icon').textContent = e.icon;
+  document.getElementById('eng-label').textContent = e.name;
+  // Update popup
+  const popup = document.getElementById('engines-popup');
+  popup.innerHTML = ENGINES.map((eng,i) =>
+    '<div class="'+(i===getEngine()?'active':'')+'" onclick="setEngine('+i+');toggleEngines()">'+eng.icon+' '+eng.name+'</div>'
+  ).join('');
+}
+function toggleEngines() {
+  document.getElementById('engines-popup').classList.toggle('show');
+}
+document.addEventListener('click', function(e) {
+  if (!e.target.closest('.search-engine') && !e.target.closest('.engines-popup')) {
+    document.getElementById('engines-popup').classList.remove('show');
+  }
+});
+
+updateEngineUI();
+
+// ===== Background system =====
+const BG_PRESETS = [
+  { name: '默认白', css: 'var(--bg)' },
+  { name: '纯白', css: '#ffffff' },
+  { name: '渐变绿', css: 'linear-gradient(135deg, #e8f5e9 0%, #c8e6c9 50%, #a5d6a7 100%)' },
+  { name: '渐变蓝', css: 'linear-gradient(135deg, #e3f2fd 0%, #bbdefb 50%, #90caf9 100%)' },
+  { name: '渐变暖', css: 'linear-gradient(135deg, #fff3e0 0%, #ffe0b2 50%, #ffcc80 100%)' },
+  { name: '暗夜', css: 'linear-gradient(135deg, #263238 0%, #37474f 50%, #455a64 100%)' },
+  { name: '樱花', css: 'linear-gradient(135deg, #fce4ec 0%, #f8bbd0 50%, #f48fb1 100%)' },
+  { name: '海洋', css: 'linear-gradient(135deg, #e0f7fa 0%, #80deea 50%, #4dd0e1 100%)' },
+];
+
+function getBg() { return localStorage.getItem('nt-bg') || ''; }
+function setBg(val) {
+  localStorage.setItem('nt-bg', val);
+  if (val.startsWith('url(') || val.startsWith('http')) {
+    document.body.style.backgroundImage = val.startsWith('url(') ? val : 'url('+val+')';
+    document.body.style.backgroundColor = '';
+    document.body.style.backgroundSize = 'cover';
+  } else if (val.includes('gradient')) {
+    document.body.style.backgroundImage = val;
+    document.body.style.backgroundColor = '';
+    document.body.style.backgroundSize = 'auto';
+  } else {
+    document.body.style.backgroundImage = 'none';
+    document.body.style.backgroundColor = val || '#F5F7FA';
+    document.body.style.backgroundSize = 'auto';
+  }
+}
+function applyBg() {
+  const saved = getBg();
+  if (saved) setBg(saved);
+}
+applyBg();
+
+function toggleBgPicker() {
+  document.getElementById('bg-picker').classList.toggle('show');
+  if (document.getElementById('bg-picker').classList.contains('show')) renderBgPanel();
+}
+function renderBgPanel() {
+  const presets = document.getElementById('bg-presets');
+  const current = getBg();
+  presets.innerHTML = BG_PRESETS.map((b,i) =>
+    '<div class="bg-preset'+(b.css===current?' active':'')+'" style="background:'+b.css+'" title="'+b.name+'" '+
+    'onclick="setBg(\''+b.css.replace(/'/g,"\\'")+'\');renderBgPanel()"></div>'
+  ).join('');
+  document.getElementById('bg-url').value = '';
+}
+function applyCustomBg() {
+  const url = document.getElementById('bg-url').value.trim();
+  if (url) { setBg(url); toggleBgPicker(); }
+}
+
+// ===== Clock =====
+function updateClock() {
+  const now = new Date();
+  const h = String(now.getHours()).padStart(2,'0');
+  const m = String(now.getMinutes()).padStart(2,'0');
+  const weekdays = ['日','一','二','三','四','五','六'];
+  const w = weekdays[now.getDay()];
+  document.getElementById('clock').textContent = h+':'+m+' · 星期'+w;
+}
+updateClock();
+setInterval(updateClock, 30000);
+
+// ===== Render cards =====
 function render(items) {
   const content = document.getElementById('content');
   let html = '';
   for (const cat of items) {
-    html += '<div class="category"><h2>' + cat.category + '</h2><div class="grid">';
+    html += '<div class="category"><h2>'+cat.category+'</h2><div class="grid">';
     for (const item of cat.items) {
-      let iconHtml;
-      if (item.icon) {
-        iconHtml = '<img src="' + item.icon + '" alt="" onerror="this.style.display=\'none\';this.nextElementSibling.style.display=\'flex\'">';
-        iconHtml += '<div class="icon-fallback" style="display:none">' + item.title.charAt(0) + '</div>';
-      } else {
-        iconHtml = '<div class="icon-fallback">' + item.title.charAt(0) + '</div>';
-      }
-      html += '<a href="' + item.url + '" class="card">' + iconHtml + '<span>' + item.title + '</span></a>';
+      const favicon = getFavicon(item.url);
+      html += '<a href="'+item.url+'" class="card">'+
+        '<img src="'+favicon+'" alt="" loading="lazy" onerror="this.style.display=\'none\';this.nextElementSibling.style.display=\'flex\'">'+
+        '<div class="icon-letter" style="display:none">'+item.title.charAt(0)+'</div>'+
+        '<span>'+item.title+'</span></a>';
     }
     html += '</div></div>';
   }
   content.innerHTML = html;
 }
-
 render(DATA);
 
-// Search as you type
+// ===== Search =====
 const search = document.getElementById('search');
+
 search.addEventListener('input', function() {
   const q = this.value.toLowerCase();
   if (!q) { render(DATA); return; }
@@ -164,35 +418,36 @@ search.addEventListener('input', function() {
   render(filtered);
 });
 
-// Press Enter to search with default search engine or navigate
 search.addEventListener('keydown', function(e) {
   if (e.key === 'Enter') {
     const q = this.value.trim();
     if (!q) return;
-    if (q.includes('.') && !q.includes(' ')) {
+    if (q.includes('.') && !q.includes(' ') && !q.includes('：') && !q.includes('？')) {
       let url = q;
       if (!url.startsWith('http')) url = 'https://' + url;
       window.location.href = url;
     } else {
-      window.location.href = 'https://www.google.com/search?q=' + encodeURIComponent(q);
+      window.location.href = ENGINES[getEngine()].search + encodeURIComponent(q);
     }
   }
 });
 
-// Click empty area to focus search
+// Focus search on click-anywhere
 document.addEventListener('click', function(e) {
-  if (e.target.tagName !== 'A' && e.target.tagName !== 'INPUT') {
+  if (e.target.tagName !== 'A' && e.target.tagName !== 'INPUT' &&
+      e.target.tagName !== 'BUTTON' && e.target.tagName !== 'SELECT' &&
+      !e.target.closest('.bg-panel') && !e.target.closest('.search-engine')) {
     search.focus();
   }
 });
 
-// Quick keyboard navigation: 1-9 to open first 9 cards
+// Keyboard shortcuts: 1-9
 document.addEventListener('keydown', function(e) {
   if (e.ctrlKey || e.metaKey || e.altKey || e.target === search) return;
   const num = parseInt(e.key);
   if (num >= 1 && num <= 9) {
     const cards = document.querySelectorAll('.card');
-    if (cards[num - 1]) cards[num - 1].click();
+    if (cards[num-1]) cards[num-1].click();
   }
 });
 </script>
