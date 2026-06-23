@@ -23,6 +23,9 @@ collections:
   projects:
     output: true
     permalink: /projects/:path/
+  notes:
+    output: true
+    permalink: /notes/:path/
 
 # Defaults
 defaults:
@@ -34,6 +37,11 @@ defaults:
   - scope:
       path: ""
       type: "projects"
+    values:
+      layout: "post"
+  - scope:
+      path: ""
+      type: "notes"
     values:
       layout: "post"
 

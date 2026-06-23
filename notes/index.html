@@ -1,0 +1,36 @@
+---
+layout: default
+title: 笔记
+permalink: /notes/
+---
+
+<div class="notes-page">
+  <h1>笔记</h1>
+
+  {% assign categories = site.notes | group_by: "category" %}
+  
+  {% if categories.size > 0 %}
+    {% for cat in categories %}
+      <div class="notes-section">
+        <h2 class="notes-category">{{ cat.name }}</h2>
+        <div class="notes-grid">
+          {% assign sorted = cat.items | sort: "title" %}
+          {% for note in sorted %}
+            <a href="{{ note.url | relative_url }}" class="notes-card">
+              <h3>{{ note.title }}</h3>
+              {% if note.tags %}
+                <div class="notes-tags">
+                  {% for tag in note.tags %}
+                    <span class="notes-tag">{{ tag }}</span>
+                  {% endfor %}
+                </div>
+              {% endif %}
+            </a>
+          {% endfor %}
+        </div>
+      </div>
+    {% endfor %}
+  {% else %}
+    <p class="empty-hint">还没有笔记，敬请期待。</p>
+  {% endif %}
+</div>

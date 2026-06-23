@@ -5,6 +5,7 @@
       <a href="{{ '/' | relative_url }}" {% if page.url == '/' %}class="active"{% endif %}>首页</a>
       <a href="{{ '/bookmarks/' | relative_url }}" {% if page.url == '/bookmarks/' %}class="active"{% endif %}>收藏夹</a>
       <a href="{{ '/blog/' | relative_url }}" {% if page.url == '/blog/' %}class="active"{% endif %}>博客</a>
+      <a href="{{ '/notes/' | relative_url }}" {% if page.url contains '/notes/' %}class="active"{% endif %}>笔记</a>
       <a href="{{ '/projects/' | relative_url }}" {% if page.url == '/projects/' %}class="active"{% endif %}>项目</a>
       <a href="{{ '/about/' | relative_url }}" {% if page.url == '/about/' %}class="active"{% endif %}>关于</a>
     </nav>
