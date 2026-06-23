@@ -13,7 +13,6 @@
     --text: #2C3E50;
     --text-light: #6B7280;
     --card: rgba(255,255,255,0.88);
-    --card-hover: rgba(255,255,255,0.97);
     --radius: 14px;
     --shadow: 0 2px 12px rgba(0,0,0,0.04);
     --shadow-hover: 0 8px 28px rgba(76,175,80,0.18);
@@ -21,7 +20,6 @@
     --blur: blur(6px);
   }
   *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
-
   html { font-size: 16px; height: 100%; }
 
   body {
@@ -36,9 +34,8 @@
     background-repeat: no-repeat;
     background-attachment: fixed;
     position: relative;
-    transition: background-image 0.8s ease;
+    transition: background-image 0.8s ease, background-color 0.8s ease;
   }
-  /* Glass overlay */
   body::before {
     content: "";
     position: fixed; top: 0; left: 0; right: 0; bottom: 0;
@@ -52,35 +49,24 @@
     display: flex; justify-content: flex-end; align-items: center;
     gap: 0.5rem; margin-bottom: 1rem;
   }
-  .top-bar button, .top-bar select {
+  .top-bar button {
     background: var(--card); border: 1px solid rgba(0,0,0,0.08);
     border-radius: 22px; padding: 0.4rem 0.85rem;
     font-size: 0.8rem; color: var(--text-light); cursor: pointer;
     backdrop-filter: var(--blur); transition: all var(--transition);
-    font-family: inherit;
+    font-family: inherit; line-height: 1.4;
   }
-  .top-bar button:hover, .top-bar select:hover { color: var(--text); border-color: var(--green); }
-  .top-bar select { appearance: none; padding-right: 1.5rem;
-    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 12 12'%3E%3Cpath d='M3 5l3 3 3-3' stroke='%236B7280' stroke-width='1.5' fill='none' stroke-linecap='round'/%3E%3C/svg%3E");
-    background-repeat: no-repeat; background-position: right 0.5rem center;
-  }
+  .top-bar button:hover { color: var(--text); border-color: var(--green); }
 
   /* ===== Hero ===== */
-  header {
-    text-align: center; padding: 1.5rem 0 0.5rem;
-  }
-  header h1 {
-    font-size: 2rem; font-weight: 800; color: var(--text); letter-spacing: 3px;
-  }
-  .clock {
-    font-size: 0.85rem; color: var(--text-light);
-    margin-top: 0.35rem; font-weight: 500;
-  }
+  header { text-align: center; padding: 1.5rem 0 0.5rem; }
+  header h1 { font-size: 2rem; font-weight: 800; color: var(--text); letter-spacing: 3px; }
+  .clock { font-size: 0.85rem; color: var(--text-light); margin-top: 0.35rem; font-weight: 500; }
 
   /* ===== Search ===== */
   .search-row {
-    display: flex; justify-content: center; align-items: center;
-    margin: 1.5rem 0 2rem; gap: 0;
+    display: flex; justify-content: center; align-items: stretch;
+    margin: 1.5rem 0 2rem; gap: 0; position: relative;
   }
   .search-engine {
     background: var(--card); border: 1px solid rgba(0,0,0,0.08);
@@ -90,15 +76,17 @@
     font-size: 0.8rem; color: var(--text-light);
     display: flex; align-items: center; gap: 0.35rem;
     white-space: nowrap; transition: all var(--transition);
+    flex-shrink: 0; height: 46px;
   }
   .search-engine:hover { color: var(--green); }
-  .search-engine .eng-icon { font-size: 1rem; }
+  .search-engine .eng-icon { font-size: 1rem; line-height: 1; }
   .search-row input {
     width: 100%; max-width: 500px;
-    padding: 0.75rem 1.25rem;
+    height: 46px;
+    padding: 0 1.25rem;
     border: 1px solid rgba(0,0,0,0.08); border-left: none;
     border-radius: 0 28px 28px 0;
-    font-size: 0.95rem; outline: none;
+    font-size: 0.95rem; outline: none; line-height: 1.4;
     transition: all var(--transition);
     background: var(--card); backdrop-filter: var(--blur);
     color: var(--text);
@@ -110,12 +98,12 @@
     left: 0; top: 100%; margin-top: 4px;
     background: var(--card); border-radius: 10px;
     box-shadow: 0 4px 16px rgba(0,0,0,0.1);
-    padding: 0.3rem 0; z-index: 10; min-width: 130px;
+    padding: 0.3rem 0; z-index: 10; min-width: 140px;
     backdrop-filter: blur(16px); border: 1px solid rgba(0,0,0,0.06);
   }
   .engines-popup.show { display: block; }
   .engines-popup div {
-    padding: 0.4rem 0.85rem; cursor: pointer;
+    padding: 0.45rem 0.85rem; cursor: pointer;
     font-size: 0.82rem; transition: background var(--transition);
   }
   .engines-popup div:hover { background: var(--green-pale); }
@@ -176,6 +164,7 @@
     background: #fff; border-radius: 16px; padding: 1.5rem;
     max-width: 500px; width: 90%;
     box-shadow: 0 12px 40px rgba(0,0,0,0.15);
+    max-height: 90vh; overflow-y: auto;
   }
   .bg-panel h3 { font-size: 1.1rem; margin-bottom: 1rem; }
   .bg-presets {
@@ -189,15 +178,29 @@
   }
   .bg-preset:hover { transform: scale(1.05); }
   .bg-preset.active { border-color: var(--green); box-shadow: 0 0 0 3px rgba(76,175,80,0.25); }
-  .bg-panel input { width: 100%; padding: 0.5rem 0.75rem; border: 1px solid #ddd;
+
+  .bg-section-label { font-size: 0.8rem; color: var(--text-light); margin: 0.75rem 0 0.5rem; font-weight: 600; }
+  .bg-url-row { display: flex; gap: 0.5rem; }
+  .bg-url-row input[type="text"] { flex: 1; padding: 0.5rem 0.75rem; border: 1px solid #ddd;
     border-radius: 8px; font-size: 0.85rem; outline: none; }
+  .bg-upload-btn {
+    padding: 0.5rem 0.9rem; background: var(--green-pale); color: var(--green-dark);
+    border: 1px solid var(--green-light); border-radius: 8px;
+    cursor: pointer; font-size: 0.8rem; white-space: nowrap;
+    font-family: inherit; display: flex; align-items: center; gap: 0.3rem;
+  }
+  .bg-upload-btn:hover { background: var(--green-light); }
+  .bg-upload-btn input { display: none; }
   .bg-panel .btn-row { display: flex; gap: 0.5rem; margin-top: 0.75rem; justify-content: flex-end; }
   .bg-panel .btn {
-    padding: 0.4rem 1rem; border-radius: 8px; border: none; cursor: pointer;
+    padding: 0.45rem 1rem; border-radius: 8px; border: none; cursor: pointer;
     font-size: 0.85rem; font-family: inherit;
   }
   .btn-primary { background: var(--green); color: #fff; }
   .btn-secondary { background: #eee; color: var(--text); }
+  .btn-danger { background: none; border: none; color: #e74c3c; cursor: pointer;
+    font-size: 0.8rem; padding: 0.3rem 0.6rem; border-radius: 6px; }
+  .btn-danger:hover { background: #fdeaea; }
 
   /* ===== Footer ===== */
   footer { text-align: center; padding: 1.5rem 0; color: var(--text-light); font-size: 0.78rem; }
@@ -211,18 +214,15 @@
 </head>
 <body>
 <div class="container">
-  <!-- Top controls -->
   <div class="top-bar">
-    <button onclick="toggleBgPicker()" title="切换背景">🖼 背景</button>
+    <button onclick="toggleBgPicker()">🖼 背景</button>
   </div>
 
-  <!-- Header -->
   <header>
     <h1>128</h1>
     <div class="clock" id="clock"></div>
   </header>
 
-  <!-- Search -->
   <div class="search-row" style="position:relative">
     <div class="search-engine" onclick="toggleEngines()">
       <span class="eng-icon" id="eng-icon">🔍</span>
@@ -233,25 +233,35 @@
     <input type="text" id="search" placeholder="搜索或输入网址..." autofocus>
   </div>
 
-  <!-- Cards -->
   <div id="content"></div>
 
-  <!-- Footer -->
   <footer>
     <a href="https://Bahu-Tang.github.io">主页</a> ·
     <a href="https://Bahu-Tang.github.io/bookmarks/">收藏夹</a>
   </footer>
 </div>
 
-<!-- Background picker overlay -->
+<!-- Background picker -->
 <div class="bg-options" id="bg-picker" onclick="this===event.target&&toggleBgPicker()">
   <div class="bg-panel">
     <h3>更换背景</h3>
     <div class="bg-presets" id="bg-presets"></div>
-    <input type="text" id="bg-url" placeholder="或输入图片URL...">
-    <div class="btn-row">
-      <button class="btn btn-secondary" onclick="toggleBgPicker()">取消</button>
+
+    <div class="bg-section-label">📎 本地上传</div>
+    <div class="bg-url-row">
+      <label class="bg-upload-btn">
+        📁 选择图片<input type="file" id="bg-file" accept="image/*" onchange="handleFileUpload(this)">
+      </label>
+      <button class="btn btn-danger" onclick="resetBg()" title="恢复默认背景">清除背景</button>
+    </div>
+
+    <div class="bg-section-label">🔗 图片链接</div>
+    <div class="bg-url-row">
+      <input type="text" id="bg-url" placeholder="输入图片URL...">
       <button class="btn btn-primary" onclick="applyCustomBg()">应用</button>
+    </div>
+    <div class="btn-row">
+      <button class="btn btn-secondary" onclick="toggleBgPicker()">完成</button>
     </div>
   </div>
 </div>
@@ -284,10 +294,15 @@ const DATA = [
   ]}
 ];
 
-// ===== Favicons via Google service =====
-function getFavicon(url) {
-  const domain = new URL(url).hostname;
-  return 'https://www.google.com/s2/favicons?domain=' + domain + '&sz=64';
+// ===== Multi-source favicon loading =====
+function getFaviconSources(url) {
+  var domain = new URL(url).hostname;
+  return [
+    'https://icons.duckduckgo.com/ip3/' + domain + '.ico',
+    'https://favicon.splitbee.io/?url=' + encodeURIComponent(url),
+    'https://www.google.com/s2/favicons?domain=' + domain + '&sz=64',
+    'https://api.faviconkit.com/' + domain + '/64'
+  ];
 }
 
 // ===== Search engines =====
@@ -301,14 +316,13 @@ const ENGINES = [
 function getEngine() { return parseInt(localStorage.getItem('nt-engine')||'0'); }
 function setEngine(i) { localStorage.setItem('nt-engine',i); updateEngineUI(); }
 function updateEngineUI() {
-  const e = ENGINES[getEngine()];
+  var e = ENGINES[getEngine()];
   document.getElementById('eng-icon').textContent = e.icon;
   document.getElementById('eng-label').textContent = e.name;
-  // Update popup
-  const popup = document.getElementById('engines-popup');
-  popup.innerHTML = ENGINES.map((eng,i) =>
-    '<div class="'+(i===getEngine()?'active':'')+'" onclick="setEngine('+i+');toggleEngines()">'+eng.icon+' '+eng.name+'</div>'
-  ).join('');
+  var popup = document.getElementById('engines-popup');
+  popup.innerHTML = ENGINES.map(function(eng,i){
+    return '<div class="'+(i===getEngine()?'active':'')+'" onclick="setEngine('+i+');toggleEngines()">'+eng.icon+' '+eng.name+'</div>';
+  }).join('');
 }
 function toggleEngines() {
   document.getElementById('engines-popup').classList.toggle('show');
@@ -318,27 +332,26 @@ document.addEventListener('click', function(e) {
     document.getElementById('engines-popup').classList.remove('show');
   }
 });
-
 updateEngineUI();
 
 // ===== Background system =====
 const BG_PRESETS = [
-  { name: '默认白', css: 'var(--bg)' },
-  { name: '纯白', css: '#ffffff' },
+  { name: '默认白', css: '#F5F7FA' },
   { name: '渐变绿', css: 'linear-gradient(135deg, #e8f5e9 0%, #c8e6c9 50%, #a5d6a7 100%)' },
   { name: '渐变蓝', css: 'linear-gradient(135deg, #e3f2fd 0%, #bbdefb 50%, #90caf9 100%)' },
   { name: '渐变暖', css: 'linear-gradient(135deg, #fff3e0 0%, #ffe0b2 50%, #ffcc80 100%)' },
   { name: '暗夜', css: 'linear-gradient(135deg, #263238 0%, #37474f 50%, #455a64 100%)' },
   { name: '樱花', css: 'linear-gradient(135deg, #fce4ec 0%, #f8bbd0 50%, #f48fb1 100%)' },
   { name: '海洋', css: 'linear-gradient(135deg, #e0f7fa 0%, #80deea 50%, #4dd0e1 100%)' },
+  { name: '旭日', css: 'linear-gradient(135deg, #fff8e1 0%, #ffe082 50%, #ffb74d 100%)' },
 ];
 
 function getBg() { return localStorage.getItem('nt-bg') || ''; }
 function setBg(val) {
   localStorage.setItem('nt-bg', val);
-  if (val.startsWith('url(') || val.startsWith('http')) {
+  if (val.startsWith('url(') || val.startsWith('data:') || val.startsWith('http')) {
     document.body.style.backgroundImage = val.startsWith('url(') ? val : 'url('+val+')';
-    document.body.style.backgroundColor = '';
+    document.body.style.backgroundColor = '#F5F7FA';
     document.body.style.backgroundSize = 'cover';
   } else if (val.includes('gradient')) {
     document.body.style.backgroundImage = val;
@@ -350,52 +363,87 @@ function setBg(val) {
     document.body.style.backgroundSize = 'auto';
   }
 }
-function applyBg() {
-  const saved = getBg();
-  if (saved) setBg(saved);
+
+// Reset background to default
+function resetBg() {
+  localStorage.removeItem('nt-bg');
+  document.body.style.backgroundImage = 'none';
+  document.body.style.backgroundColor = '#F5F7FA';
+  document.body.style.backgroundSize = 'auto';
+  if (document.getElementById('bg-picker').classList.contains('show')) {
+    renderBgPanel();
+  }
 }
+
+function applyBg() { var saved = getBg(); if (saved) setBg(saved); }
 applyBg();
 
 function toggleBgPicker() {
-  document.getElementById('bg-picker').classList.toggle('show');
-  if (document.getElementById('bg-picker').classList.contains('show')) renderBgPanel();
+  var picker = document.getElementById('bg-picker');
+  picker.classList.toggle('show');
+  if (picker.classList.contains('show')) renderBgPanel();
 }
+
 function renderBgPanel() {
-  const presets = document.getElementById('bg-presets');
-  const current = getBg();
-  presets.innerHTML = BG_PRESETS.map((b,i) =>
-    '<div class="bg-preset'+(b.css===current?' active':'')+'" style="background:'+b.css+'" title="'+b.name+'" '+
-    'onclick="setBg(\''+b.css.replace(/'/g,"\\'")+'\');renderBgPanel()"></div>'
-  ).join('');
+  var presets = document.getElementById('bg-presets');
+  var current = getBg();
+  presets.innerHTML = BG_PRESETS.map(function(b){
+    var cssSafe = b.css.replace(/'/g,"\\'");
+    return '<div class="bg-preset'+(b.css===current?' active':'')+'" style="background:'+b.css+'" title="'+b.name+'" '+
+      'onclick="setBg(\''+cssSafe+'\');renderBgPanel()"></div>';
+  }).join('');
   document.getElementById('bg-url').value = '';
 }
+
+// Handle local file upload (convert to data URL, store in localStorage)
+function handleFileUpload(input) {
+  var file = input.files[0];
+  if (!file) return;
+  if (file.size > 5 * 1024 * 1024) { // 5MB limit
+    alert('图片文件不能超过 5MB，请选择更小的图片。');
+    input.value = '';
+    return;
+  }
+  var reader = new FileReader();
+  reader.onload = function(e) {
+    setBg(e.target.result);
+    renderBgPanel();
+  };
+  reader.readAsDataURL(file);
+}
+
 function applyCustomBg() {
-  const url = document.getElementById('bg-url').value.trim();
+  var url = document.getElementById('bg-url').value.trim();
   if (url) { setBg(url); toggleBgPicker(); }
 }
 
 // ===== Clock =====
 function updateClock() {
-  const now = new Date();
-  const h = String(now.getHours()).padStart(2,'0');
-  const m = String(now.getMinutes()).padStart(2,'0');
-  const weekdays = ['日','一','二','三','四','五','六'];
-  const w = weekdays[now.getDay()];
+  var now = new Date();
+  var h = String(now.getHours()).padStart(2,'0');
+  var m = String(now.getMinutes()).padStart(2,'0');
+  var weekdays = ['日','一','二','三','四','五','六'];
+  var w = weekdays[now.getDay()];
   document.getElementById('clock').textContent = h+':'+m+' · 星期'+w;
 }
 updateClock();
 setInterval(updateClock, 30000);
 
-// ===== Render cards =====
+// ===== Render cards with multi-source favicon fallback =====
 function render(items) {
-  const content = document.getElementById('content');
-  let html = '';
-  for (const cat of items) {
+  var content = document.getElementById('content');
+  var html = '';
+  for (var ci = 0; ci < items.length; ci++) {
+    var cat = items[ci];
     html += '<div class="category"><h2>'+cat.category+'</h2><div class="grid">';
-    for (const item of cat.items) {
-      const favicon = getFavicon(item.url);
+    for (var ii = 0; ii < cat.items.length; ii++) {
+      var item = cat.items[ii];
+      var sources = getFaviconSources(item.url);
+      var dataSources = sources.map(function(s){return ' data-src-'+sources.indexOf(s)+'="'+s+'"';}).join('');
       html += '<a href="'+item.url+'" class="card">'+
-        '<img src="'+favicon+'" alt="" loading="lazy" onerror="this.style.display=\'none\';this.nextElementSibling.style.display=\'flex\'">'+
+        '<img src="'+sources[0]+'" alt="" loading="lazy" '+
+        'data-sources="'+sources.join('||')+'" '+
+        'onerror="(function(img){var srcs=img.getAttribute(\'data-sources\').split(\'||\');var idx=parseInt(img.getAttribute(\'data-try\')||\'0\');if(idx+1<srcs.length){img.setAttribute(\'data-try\',idx+1);img.src=srcs[idx+1];}else{img.style.display=\'none\';img.nextElementSibling.style.display=\'flex\';}})(this)">'+
         '<div class="icon-letter" style="display:none">'+item.title.charAt(0)+'</div>'+
         '<span>'+item.title+'</span></a>';
     }
@@ -406,25 +454,27 @@ function render(items) {
 render(DATA);
 
 // ===== Search =====
-const search = document.getElementById('search');
+var search = document.getElementById('search');
 
 search.addEventListener('input', function() {
-  const q = this.value.toLowerCase();
+  var q = this.value.toLowerCase();
   if (!q) { render(DATA); return; }
-  const filtered = DATA.map(cat => ({
-    category: cat.category,
-    items: cat.items.filter(i => i.title.toLowerCase().includes(q) || i.url.toLowerCase().includes(q))
-  })).filter(c => c.items.length > 0);
+  var filtered = DATA.map(function(cat){
+    return {
+      category: cat.category,
+      items: cat.items.filter(function(i){ return i.title.toLowerCase().indexOf(q)>=0 || i.url.toLowerCase().indexOf(q)>=0; })
+    };
+  }).filter(function(c){ return c.items.length > 0; });
   render(filtered);
 });
 
 search.addEventListener('keydown', function(e) {
   if (e.key === 'Enter') {
-    const q = this.value.trim();
+    var q = this.value.trim();
     if (!q) return;
-    if (q.includes('.') && !q.includes(' ') && !q.includes('：') && !q.includes('？')) {
-      let url = q;
-      if (!url.startsWith('http')) url = 'https://' + url;
+    if (q.indexOf('.')>=0 && q.indexOf(' ')=== -1 && q.indexOf('：')=== -1 && q.indexOf('？')=== -1) {
+      var url = q;
+      if (url.indexOf('http') !== 0) url = 'https://' + url;
       window.location.href = url;
     } else {
       window.location.href = ENGINES[getEngine()].search + encodeURIComponent(q);
@@ -435,7 +485,7 @@ search.addEventListener('keydown', function(e) {
 // Focus search on click-anywhere
 document.addEventListener('click', function(e) {
   if (e.target.tagName !== 'A' && e.target.tagName !== 'INPUT' &&
-      e.target.tagName !== 'BUTTON' && e.target.tagName !== 'SELECT' &&
+      e.target.tagName !== 'BUTTON' && e.target.tagName !== 'LABEL' &&
       !e.target.closest('.bg-panel') && !e.target.closest('.search-engine')) {
     search.focus();
   }
@@ -444,9 +494,9 @@ document.addEventListener('click', function(e) {
 // Keyboard shortcuts: 1-9
 document.addEventListener('keydown', function(e) {
   if (e.ctrlKey || e.metaKey || e.altKey || e.target === search) return;
-  const num = parseInt(e.key);
+  var num = parseInt(e.key);
   if (num >= 1 && num <= 9) {
-    const cards = document.querySelectorAll('.card');
+    var cards = document.querySelectorAll('.card');
     if (cards[num-1]) cards[num-1].click();
   }
 });
