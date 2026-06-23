@@ -1,0 +1,168 @@
+---
+layout: default
+---
+
+<div class="progress-bar" id="progress-bar"></div>
+
+<div class="notes-layout">
+  <!-- Folder sidebar -->
+  <aside class="notes-folder-sidebar" id="notes-folder-sidebar">
+    <div class="folder-title">📂 笔记目录</div>
+    <div class="folder-tree" id="folder-tree">
+      {% assign categories = site.notes | group_by: "category" %}
+      {% for cat in categories %}
+        {% assign sorted = cat.items | sort: "title" %}
+        <div class="folder-category">
+          <div class="folder-cat-header" onclick="this.parentElement.classList.toggle('collapsed')">
+            <span class="folder-arrow">▼</span>
+            <span>{{ cat.name }}</span>
+            <span class="folder-count">{{ sorted.size }}</span>
+          </div>
+          <div class="folder-items">
+            {% for note in sorted %}
+              <a href="{{ note.url | relative_url }}" class="folder-item {% if note.url == page.url %}active{% endif %}" title="{{ note.title }}">
+                {{ note.title | truncate: 30 }}
+              </a>
+            {% endfor %}
+          </div>
+        </div>
+      {% endfor %}
+    </div>
+  </aside>
+
+  <!-- Main content -->
+  <div class="notes-main-area">
+    <article class="post-main">
+      <header class="post-header">
+        <h1>{{ page.title }}</h1>
+        <time datetime="{{ page.date | date_to_xmlschema }}">{{ page.date | date: "%Y-%m-%d" }}</time>
+        <span class="post-category">{{ page.category }}</span>
+      </header>
+      <div class="post-content">
+        {{ content }}
+      </div>
+
+      {% assign category = page.category %}
+      {% assign notes_in_cat = site.notes | where: "category", category | sort: "title" %}
+      {% assign prev_note = nil %}
+      {% assign next_note = nil %}
+      {% assign found = false %}
+      {% for n in notes_in_cat %}
+        {% if found and next_note == nil %}{% assign next_note = n %}{% endif %}
+        {% if n.url == page.url %}{% assign found = true %}{% else %}{% unless found %}{% assign prev_note = n %}{% endunless %}{% endif %}
+      {% endfor %}
+
+      <nav class="post-nav">
+        {% if prev_note %}
+          <a href="{{ prev_note.url | relative_url }}" class="post-nav-link prev">
+            <span class="post-nav-label">上一篇</span>
+            <span class="post-nav-title">{{ prev_note.title }}</span>
+          </a>
+        {% else %}
+          <span class="post-nav-link prev disabled"></span>
+        {% endif %}
+        <a href="{{ '/notes/' | relative_url }}" class="post-nav-link back">返回笔记</a>
+        {% if next_note %}
+          <a href="{{ next_note.url | relative_url }}" class="post-nav-link next">
+            <span class="post-nav-label">下一篇</span>
+            <span class="post-nav-title">{{ next_note.title }}</span>
+          </a>
+        {% else %}
+          <span class="post-nav-link next disabled"></span>
+        {% endif %}
+      </nav>
+    </article>
+
+    <!-- Right TOC -->
+    <aside class="post-toc" id="post-toc">
+      <div class="toc-title">目录</div>
+      <nav class="toc-nav" id="toc-nav"></nav>
+    </aside>
+  </div>
+</div>
+
+<button class="back-to-top" id="back-to-top" title="回到顶部">↑</button>
+<div class="lightbox" id="lightbox" onclick="closeLightbox()">
+  <span class="lightbox-close">&times;</span>
+  <img id="lightbox-img" src="" alt="">
+</div>
+
+<script>
+(function(){
+  // Progress bar
+  var bar = document.getElementById('progress-bar');
+  window.addEventListener('scroll', function(){
+    var h = document.documentElement;
+    var scroll = h.scrollTop || document.body.scrollTop;
+    var height = h.scrollHeight - h.clientHeight;
+    bar.style.width = height > 0 ? (scroll / height * 100) + '%' : '0%';
+  });
+
+  // Back to top
+  var btt = document.getElementById('back-to-top');
+  window.addEventListener('scroll', function(){
+    btt.style.display = window.scrollY > 300 ? 'flex' : 'none';
+  });
+  btt.addEventListener('click', function(){ window.scrollTo({top:0,behavior:'smooth'}); });
+
+  // TOC - includes h1, h2, h3
+  var tocNav = document.getElementById('toc-nav');
+  if (tocNav) {
+    var content = document.querySelector('.post-content');
+    var headings = content.querySelectorAll('h1, h2, h3');
+    if (headings.length > 0) {
+      var html = '<ul>';
+      headings.forEach(function(h){
+        var id = h.textContent.replace(/^\d+(\.\d+)*\s*/, '').replace(/\s+/g, '-').replace(/[^a-zA-Z0-9\u4e00-\u9fff\-]/g, '');
+        h.id = id;
+        var cls = 'toc-' + h.tagName.toLowerCase();
+        var indent = h.tagName === 'H3' ? ' toc-indent' : '';
+        html += '<li class="' + cls + indent + '"><a href="#' + id + '">' + h.textContent + '</a></li>';
+      });
+      html += '</ul>';
+      tocNav.innerHTML = html;
+    } else {
+      document.getElementById('post-toc').style.display = 'none';
+    }
+  }
+
+  // Lightbox
+  var lightbox = document.getElementById('lightbox');
+  var lImg = document.getElementById('lightbox-img');
+  var images = document.querySelectorAll('.post-content img');
+  images.forEach(function(img){
+    img.addEventListener('click', function(){
+      lImg.src = img.src; lightbox.classList.add('show');
+    });
+    img.style.cursor = 'zoom-in';
+  });
+
+  // Highlight active TOC
+  if (tocNav) {
+    var tocLinks = tocNav.querySelectorAll('a');
+    window.addEventListener('scroll', function(){
+      var current = '';
+      document.querySelectorAll('.post-content h1, .post-content h2, .post-content h3').forEach(function(h){
+        if (h.getBoundingClientRect().top < 120) current = h.id;
+      });
+      tocLinks.forEach(function(a){
+        a.classList.toggle('toc-active', a.getAttribute('href') === '#' + current);
+      });
+    });
+  }
+
+  // Mobile folder sidebar toggle
+  var sidebarToggle = document.getElementById('notes-folder-sidebar');
+  if (sidebarToggle) {
+    // Scroll active item into view
+    var activeItem = sidebarToggle.querySelector('.folder-item.active');
+    if (activeItem) {
+      setTimeout(function(){ activeItem.scrollIntoView({block:'center'}); }, 100);
+    }
+  }
+})();
+
+function closeLightbox() {
+  document.getElementById('lightbox').classList.remove('show');
+}
+</script>

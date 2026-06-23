@@ -43,7 +43,7 @@ defaults:
       path: ""
       type: "notes"
     values:
-      layout: "post"
+      layout: "note"
 
 # Exclude from processing
 exclude:
