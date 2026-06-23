@@ -1,0 +1,142 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+  <title>单色 OneColor</title>
+  <link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+  <div id="app">
+    <header id="topbar">
+      <h1>单色 OneColor</h1>
+      <span id="opencv-status" class="status-badge">加载中</span>
+    </header>
+
+    <main id="preview-area">
+      <div id="image-wrapper">
+        <canvas id="output-canvas"></canvas>
+        <div id="drop-zone">
+          <div class="drop-icon">
+            <svg width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5">
+              <rect x="3" y="3" width="18" height="18" rx="2" ry="2"/>
+              <circle cx="8.5" cy="8.5" r="1.5"/>
+              <polyline points="21 15 16 10 5 21"/>
+            </svg>
+          </div>
+          <span>点击或拖拽上传图片</span>
+          <span class="drop-hint">支持 JPG / PNG / WebP</span>
+        </div>
+      </div>
+      <canvas id="source-canvas" style="display:none"></canvas>
+    </main>
+
+    <aside id="control-panel">
+      <div class="panel-inner">
+
+        <div class="control-group">
+          <label class="group-label">模式</label>
+          <div class="btn-row" id="mode-btns">
+            <button class="btn active" data-mode="channel-gray">单通道灰度</button>
+            <button class="btn" data-mode="channel-tint">通道着色</button>
+            <button class="btn" data-mode="selective-color">色彩抽离</button>
+          </div>
+        </div>
+
+        <div class="control-group" id="channel-group">
+          <label class="group-label">通道</label>
+          <div class="btn-row btn-row-3" id="channel-btns">
+            <button class="btn active" data-channel="0"><span class="dot red"></span>R</button>
+            <button class="btn" data-channel="1"><span class="dot green"></span>G</button>
+            <button class="btn" data-channel="2"><span class="dot blue"></span>B</button>
+          </div>
+        </div>
+
+        <div class="control-group" id="tint-group" style="display:none">
+          <label class="group-label">着色</label>
+          <div class="tint-row">
+            <input type="color" id="tint-color" value="#00bcd4">
+            <div class="tint-presets" id="tint-presets">
+              <button class="preset-swatch active" data-color="#00bcd4" style="background:#00bcd4"></button>
+              <button class="preset-swatch" data-color="#e91e63" style="background:#e91e63"></button>
+              <button class="preset-swatch" data-color="#ff9800" style="background:#ff9800"></button>
+              <button class="preset-swatch" data-color="#795548" style="background:#795548"></button>
+              <button class="preset-swatch" data-color="#4caf50" style="background:#4caf50"></button>
+              <button class="preset-swatch" data-color="#9c27b0" style="background:#9c27b0"></button>
+            </div>
+          </div>
+        </div>
+
+        <div class="control-group" id="hue-group" style="display:none">
+          <label class="group-label">保留色调 <span id="hue-val">0°</span></label>
+          <input type="range" id="hue-slider" min="0" max="360" value="0">
+          <div class="hue-bar" id="hue-bar"></div>
+          <label class="group-label" style="margin-top:8px">容差 <span id="tol-val">30°</span></label>
+          <input type="range" id="tolerance-slider" min="5" max="90" value="30">
+        </div>
+
+        <div class="control-group">
+          <label class="group-label">效果增强</label>
+          <div class="slider-row">
+            <span>暗角</span>
+            <input type="range" id="vignette-slider" min="0" max="100" value="0">
+            <span class="slider-val" id="vignette-val">0</span>
+          </div>
+          <div class="slider-row">
+            <span>焦点模糊</span>
+            <input type="range" id="blur-slider" min="0" max="100" value="0">
+            <span class="slider-val" id="blur-val">0</span>
+          </div>
+          <div class="slider-row">
+            <span>中心亮度</span>
+            <input type="range" id="brightness-slider" min="0" max="100" value="0">
+            <span class="slider-val" id="brightness-val">0</span>
+          </div>
+        </div>
+
+        <div class="control-group">
+          <label class="toggle-label">
+            <input type="checkbox" id="auto-toggle">
+            <span class="toggle-track">
+              <span class="toggle-thumb"></span>
+            </span>
+            自动主体检测
+          </label>
+        </div>
+
+        <div class="control-group" id="action-group">
+          <button class="btn btn-primary" id="export-btn">导出图片</button>
+          <button class="btn btn-ghost" id="reset-btn">重置</button>
+        </div>
+
+      </div>
+    </aside>
+
+    <div id="loading-overlay" style="display:none">
+      <div class="spinner"></div>
+      <span>处理中...</span>
+    </div>
+  </div>
+
+  <input type="file" id="file-input" accept="image/jpeg,image/png,image/webp" hidden>
+
+  <script>
+    window.OPENCV_READY = false;
+    window.OPENCV_LOADING = true;
+    function onOpenCVReady() {
+      window.OPENCV_READY = true;
+      window.OPENCV_LOADING = false;
+      if (window._onCvReady) window._onCvReady();
+    }
+    function onOpenCVError() {
+      window.OPENCV_LOADING = false;
+      if (window._onCvError) window._onCvError();
+    }
+  </script>
+  <script async src="https://docs.opencv.org/4.x/opencv.js" onload="onOpenCVReady()" onerror="onOpenCVError()"></script>
+  <script src="js/processor.js"></script>
+  <script src="js/effects.js"></script>
+  <script src="js/saliency.js"></script>
+  <script src="js/app.js"></script>
+</body>
+</html>
