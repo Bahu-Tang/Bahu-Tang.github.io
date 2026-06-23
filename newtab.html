@@ -68,30 +68,31 @@
     display: flex; justify-content: center; align-items: stretch;
     margin: 1.5rem 0 2rem; gap: 0; position: relative;
   }
+  .search-box {
+    display: flex; align-items: stretch;
+    background: var(--card); backdrop-filter: var(--blur);
+    border: 1px solid rgba(0,0,0,0.08);
+    border-radius: 28px; max-width: 560px; width: 100%;
+    transition: border-color var(--transition), box-shadow var(--transition);
+  }
+  .search-box:focus-within { border-color: var(--green); box-shadow: 0 0 0 3px rgba(76,175,80,0.15); }
   .search-engine {
-    background: var(--card); border: 1px solid rgba(0,0,0,0.08);
-    border-right: none; border-radius: 28px 0 0 28px;
     padding: 0 0.3rem 0 0.9rem; cursor: pointer;
-    backdrop-filter: var(--blur);
     font-size: 0.8rem; color: var(--text-light);
     display: flex; align-items: center; gap: 0.35rem;
-    white-space: nowrap; transition: all var(--transition);
-    flex-shrink: 0; height: 46px;
+    white-space: nowrap; transition: color var(--transition);
+    flex-shrink: 0; user-select: none;
   }
   .search-engine:hover { color: var(--green); }
   .search-engine .eng-icon { font-size: 1rem; line-height: 1; }
-  .search-row input {
-    width: 100%; max-width: 500px;
-    height: 46px;
+  .search-box input {
+    flex: 1; max-width: 500px; height: 46px;
     padding: 0 1.25rem;
-    border: 1px solid rgba(0,0,0,0.08); border-left: none;
-    border-radius: 0 28px 28px 0;
-    font-size: 0.95rem; outline: none; line-height: 1.4;
-    transition: all var(--transition);
-    background: var(--card); backdrop-filter: var(--blur);
+    border: none; outline: none;
+    font-size: 0.95rem; line-height: 1.4;
+    background: transparent;
     color: var(--text);
   }
-  .search-row input:focus { border-color: var(--green); box-shadow: 0 0 0 3px rgba(76,175,80,0.15); }
 
   .engines-popup {
     display: none; position: absolute;
@@ -223,14 +224,16 @@
     <div class="clock" id="clock"></div>
   </header>
 
-  <div class="search-row" style="position:relative">
-    <div class="search-engine" onclick="toggleEngines()">
-      <span class="eng-icon" id="eng-icon">🔍</span>
-      <span id="eng-label">Google</span>
-      <span style="font-size:0.55rem;margin-left:0.15rem">▼</span>
+  <div class="search-row">
+    <div class="search-box" style="position:relative">
+      <div class="search-engine" onclick="toggleEngines()">
+        <span class="eng-icon" id="eng-icon">🔍</span>
+        <span id="eng-label">Google</span>
+        <span style="font-size:0.55rem;margin-left:0.15rem">▼</span>
+      </div>
+      <div class="engines-popup" id="engines-popup"></div>
+      <input type="text" id="search" placeholder="搜索或输入网址..." autofocus>
     </div>
-    <div class="engines-popup" id="engines-popup"></div>
-    <input type="text" id="search" placeholder="搜索或输入网址..." autofocus>
   </div>
 
   <div id="content"></div>
